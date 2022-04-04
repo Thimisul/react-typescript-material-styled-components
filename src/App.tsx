@@ -1,45 +1,31 @@
-import * as React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
+import React from 'react';
+// Imports Material-UI
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import ProTip from './PropTip';
-import styled from 'styled-components';
+// Imports P
+import { Clients } from './Pages';
+import { Sidebar } from './Components';
+import AppBar from '@mui/material/AppBar';
+import { Toolbar, Typography } from '@mui/material';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Button color="inherit" href="https://mui.com/">
-        Your Website
-      </Button>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
-  );
-}
 
 export default function App() {
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Create React App example with styled-components and TypeScript
-        </Typography>
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(6, 1fr)',
+        gap: 0,
+        gridTemplateRows: 'auto',
+        gridTemplateAreas:
+          `"header header header header header header"
+           "sidebar main main main main main"
+           "footer footer footer footer footer footer"`,
+      }}
+    >
+      <Box sx={{ gridArea: 'header', bgcolor: '#041317' }}></Box>
+      <Box sx={{ gridArea: 'main' }}><Clients /></Box>
+      <Box sx={{ gridArea: 'sidebar', bgcolor: '#041317' }}><Sidebar /></Box>
+      <Box sx={{ gridArea: 'footer', bgcolor: '#041317' }}>Footer</Box>
+    </Box >
   );
 }
-
-const Button = styled(Link)`
-  /* This renders the buttons above... Edit me! */
-  display: inline-block;
-  border-radius: 3px;
-  padding: 0.5rem 0;
-  margin: 0.5rem 1rem;
-  width: 11rem;
-  background: #00ff;
-  color: white;
-  border: 2px solid white;
-` 
