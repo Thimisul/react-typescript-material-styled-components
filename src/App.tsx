@@ -1,11 +1,9 @@
 import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
-// Imports P
+// Imports
 import { Clients } from './Pages';
 import { Sidebar } from './Components';
-import AppBar from '@mui/material/AppBar';
-import { Toolbar, Typography } from '@mui/material';
 
 
 export default function App() {

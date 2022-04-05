@@ -1,6 +1,6 @@
 import React from 'react';
 //Imports Material-UI
-import { Box, Divider, List, ListItem, ListItemIcon, ListItemText, Container } from '@mui/material';
+import { Box, Divider, List, ListItem, ListItemIcon, ListItemText, Container, Hidden } from '@mui/material';
 import { CalendarMonthOutlined, BadgeOutlined, GroupOutlined, FactCheckOutlined } from '@mui/icons-material'
 //import images 
 import logoImg from '../../assets/Logo-Beauty-Saloon.svg'
@@ -33,28 +33,30 @@ const Sidebar = () => {
   ]
 
   return (
-    <Container>
+    <Hidden smDown>
+      <Container>
 
-      <Box sx={{ pt: 1, pb: 1 }}>
-        <img src={logoImg} alt="Beauty Saloon" />
-      </Box>
+        <Box sx={{ pt: 1, pb: 1 }}>
+          <img src={logoImg} alt="Beauty Saloon" />
+        </Box>
 
-      <Divider />
+        <Divider />
 
-      <List>
-        {listMenu.map((item) => (
-          <ListItem button key={item.text} onClick={(e) => handleMenuSelect(item.text)}>
-            <ListItemIcon>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
+        <List>
+          {listMenu.map((item) => (
+            <ListItem button key={item.text} onClick={(e) => handleMenuSelect(item.text)}>
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
 
-      <Divider />
+        <Divider />
 
-    </Container>
+      </Container>
+    </Hidden>
   );
 }
 
