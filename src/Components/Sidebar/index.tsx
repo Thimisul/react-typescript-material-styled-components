@@ -4,23 +4,17 @@ import { Box, Divider, List, ListItem, ListItemIcon, ListItemText, Container, Hi
 import { CalendarMonthOutlined, BadgeOutlined, GroupOutlined, FactCheckOutlined, PointOfSaleOutlined, LoyaltyOutlined, EqualizerOutlined } from '@mui/icons-material'
 //import images 
 import logoImg from '../../assets/Logo-Beauty-Saloon.svg'
-import { Link as RouterLink } from 'react-router-dom';
-import Link from '@mui/material/Link';
+import { Link } from 'react-router-dom';
 //import Styled-Components
 
 
 const Sidebar = () => {
 
-  const handleMenuSelect = (item: string) => {
-    console.log(item)
-
-  }
-
+  //Lista do Menu sidebar
   const listMenu = [
     {
       'text': 'Agenda',
-      'icon': <CalendarMonthOutlined />,
-      'divider': true
+      'icon': <CalendarMonthOutlined />
     },
     {
       'text': 'Clientes',
@@ -36,8 +30,7 @@ const Sidebar = () => {
     },
     {
       'text': 'Convênios',
-      'icon': <FactCheckOutlined />,
-      'divider': true
+      'icon': <FactCheckOutlined />
     },
     {
       'text': 'Caixa',
@@ -61,7 +54,7 @@ const Sidebar = () => {
 
         <List>
           {listMenu.map((item) => (
-            <ListItem button component={RouterLink} key={item.text} to={item.text} >
+            <ListItem key={item.text} button component={Link} to={item.text}>
               <ListItemIcon >
                 {item.icon}
               </ListItemIcon>

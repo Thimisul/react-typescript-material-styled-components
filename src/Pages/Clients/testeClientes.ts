@@ -4,13 +4,13 @@ export const jsonClientsFaker = () => {
 
   var clients = [{
     name: '',
-    gender: '',
+    birthday: new Date(Date.now())
   }];
 
   for (let index = 0; index < 10; index++) {
     clients.push({
       name: faker.name.findName(),
-      gender: faker.name.gender()
+      birthday: new Date(faker.date.past())
     })
   }
 

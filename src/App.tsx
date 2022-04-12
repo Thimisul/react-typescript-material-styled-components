@@ -2,11 +2,9 @@ import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
 // Imports
-import { Clients } from './Pages';
+import { Clients, Employees } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Employees from './Pages/Employees';
-
 
 export default function App() {
   return (

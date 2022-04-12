@@ -22,11 +22,16 @@ import { jsonClientsFaker } from './testeClientes'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Divider, IconButton } from '@mui/material';
 
+import { DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+
 //Interfaces
 
 interface IFormInputs {
   name: string
-  gender: string
+  birthday: Date
 }
 
 
@@ -43,6 +48,7 @@ const Clients = () => {
   }, [])
   //Salva Usuário na Lista e da um reset no form
   const onSubmit: SubmitHandler<IFormInputs> = data => {
+    console.log(data)
     setShowForm(false);
     setListClients(state => [data, ...state])
     reset();
@@ -74,17 +80,24 @@ const Clients = () => {
                 <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
             </Grid>
 
-            <Grid item xs={6} >
-              <Controller
-                name="gender"
-                defaultValue=''
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField fullWidth {...field} label='Genero' />}
-              />
-              {errors.gender?.type === 'required' &&
-                <Typography variant='inherit' color={'tomato'} >"Gender name is required"</Typography>}
-            </Grid>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Grid item xs={6} >
+                <Controller
+                  control={control}
+                  name="birthday"
+                  defaultValue={new Date(Date.now())}
+                  rules={{ required: true }} //optional
+                  render={({ field }) =>
+                    <DatePicker {...field}
+                      value={field.value}
+                      renderInput={props => <TextField {...props} label='Data de Nascimento'></TextField>}
+                    />
+
+
+                  }
+                />
+              </Grid>
+            </LocalizationProvider>
 
           </Grid>
 
@@ -110,7 +123,7 @@ const Clients = () => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Gender</TableCell>
+              <TableCell>Data de Nascimento</TableCell>
               <TableCell>Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -120,7 +133,7 @@ const Clients = () => {
               client?.name &&
               <TableRow key={client.name}>
                 <TableCell>{client.name}</TableCell>
-                <TableCell>{client.gender}</TableCell>
+                <TableCell>{client.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
                 <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
               </TableRow>
             ))}

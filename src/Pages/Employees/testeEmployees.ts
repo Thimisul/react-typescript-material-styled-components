@@ -2,17 +2,17 @@ import { faker } from '@faker-js/faker'
 
 export const jsonEmployeesFaker = () => {
 
-  var Employees = [{
+  var employees = [{
     name: '',
-    gender: '',
+    birthday: new Date(Date.now())
   }];
 
   for (let index = 0; index < 10; index++) {
-    Employees.push({
+    employees.push({
       name: faker.name.findName(),
-      gender: faker.name.gender()
+      birthday: new Date(faker.date.past())
     })
   }
 
-  return JSON.stringify(Employees)
+  return JSON.stringify(employees)
 }

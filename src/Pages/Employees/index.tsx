@@ -21,12 +21,14 @@ import { jsonEmployeesFaker } from './testeEmployees'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Divider, IconButton } from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 //Interfaces
 
 interface IFormInputs {
   name: string
-  gender: string
+  birthday: Date
 }
 
 
@@ -74,18 +76,24 @@ const Employees = () => {
                 <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
             </Grid>
 
-            <Grid item xs={6} >
-              <Controller
-                name="gender"
-                defaultValue=''
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField fullWidth {...field} label='Genero' />}
-              />
-              {errors.gender?.type === 'required' &&
-                <Typography variant='inherit' color={'tomato'} >"Gender name is required"</Typography>}
-            </Grid>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Grid item xs={6} >
+                <Controller
+                  control={control}
+                  name="birthday"
+                  defaultValue={new Date(Date.now())}
+                  rules={{ required: true }} //optional
+                  render={({ field }) =>
+                    <DatePicker {...field}
+                      value={field.value}
+                      renderInput={props => <TextField {...props} label='Data de Nascimento'></TextField>}
+                    />
 
+
+                  }
+                />
+              </Grid>
+            </LocalizationProvider>
           </Grid>
 
           <Button
@@ -110,7 +118,7 @@ const Employees = () => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Gender</TableCell>
+              <TableCell>Data de Nascimento</TableCell>
               <TableCell>Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -120,7 +128,7 @@ const Employees = () => {
               Employee?.name &&
               <TableRow key={Employee.name}>
                 <TableCell>{Employee.name}</TableCell>
-                <TableCell>{Employee.gender}</TableCell>
+                <TableCell>{Employee.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
                 <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
               </TableRow>
             ))}
