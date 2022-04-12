@@ -17,7 +17,7 @@ import Container from '@mui/material/Container';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 //Importar json Fake para testes
-import { jsonClientsFaker } from './testeClientes'
+import { jsonEmployeesFaker } from './testeEmployees'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Divider, IconButton } from '@mui/material';
@@ -30,21 +30,21 @@ interface IFormInputs {
 }
 
 
-const Clients = () => {
+const Employees = () => {
   //react-hook-form
   const { handleSubmit, formState: { errors }, control, reset } = useForm<IFormInputs>();
   //Mostrar Formulário
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
-  const [listClients, setListClients] = useState<IFormInputs[]>([])
+  const [listEmployees, setListEmployees] = useState<IFormInputs[]>([])
   //Recebe json para carregamento da lista na página
   useEffect(() => {
-    setListClients(JSON.parse(jsonClientsFaker()));
+    setListEmployees(JSON.parse(jsonEmployeesFaker()));
   }, [])
   //Salva Usuário na Lista e da um reset no form
   const onSubmit: SubmitHandler<IFormInputs> = data => {
     setShowForm(false);
-    setListClients(state => [data, ...state])
+    setListEmployees(state => [data, ...state])
     reset();
   };
 
@@ -52,11 +52,11 @@ const Clients = () => {
   return (
     <Container>
 
-      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Cliente</Button>
+      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Employee</Button>
 
       {showForm && <Paper sx={{ p: 2 }}>
 
-        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Cliente</Typography>
+        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Employee</Typography>
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
 
@@ -104,7 +104,7 @@ const Clients = () => {
 
       <Box>
         <Divider />
-        <Typography mt={3} variant={'h4'}>Lista de Clientes</Typography>
+        <Typography mt={3} variant={'h4'}>Lista de Employees</Typography>
         <Table size="small">
 
           <TableHead>
@@ -116,11 +116,11 @@ const Clients = () => {
           </TableHead>
 
           <TableBody>
-            {listClients?.map((client) => (
-              client?.name &&
-              <TableRow key={client.name}>
-                <TableCell>{client.name}</TableCell>
-                <TableCell>{client.gender}</TableCell>
+            {listEmployees?.map((Employee) => (
+              Employee?.name &&
+              <TableRow key={Employee.name}>
+                <TableCell>{Employee.name}</TableCell>
+                <TableCell>{Employee.gender}</TableCell>
                 <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
               </TableRow>
             ))}
@@ -133,4 +133,4 @@ const Clients = () => {
   );
 }
 
-export default Clients;
+export default Employees;

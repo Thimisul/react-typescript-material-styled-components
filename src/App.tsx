@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 // Imports
 import { Clients } from './Pages';
 import { Sidebar } from './Components';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Employees from './Pages/Employees';
 
 
 export default function App() {
@@ -20,10 +22,24 @@ export default function App() {
            "footer footer footer footer footer footer"`,
       }}
     >
-      <Box sx={{ gridArea: 'header', bgcolor: '#041317' }}></Box>
-      <Box sx={{ gridArea: 'main' }}><Clients /></Box>
-      <Box sx={{ gridArea: 'sidebar', bgcolor: '#041317' }}><Sidebar /></Box>
-      <Box sx={{ gridArea: 'footer', bgcolor: '#041317' }}>Footer</Box>
+      <BrowserRouter>
+        <Box sx={{ gridArea: 'header', bgcolor: '#041317' }}></Box>
+        <Box sx={{ gridArea: 'main' }}>
+          {/* Rotas dentro do main */}
+
+          <Routes>
+            <Route path="/home" element={<></>}>
+            </Route>
+            <Route path="/clientes" element={<Clients />}>
+            </Route>
+            <Route path="/profissionais" element={<Employees />}>
+            </Route>
+          </Routes>
+
+        </Box>
+        <Box sx={{ gridArea: 'sidebar', bgcolor: '#041317' }}><Sidebar /></Box>
+        <Box sx={{ gridArea: 'footer', bgcolor: '#041317' }}>Footer</Box>
+      </BrowserRouter>
     </Box >
   );
 }
