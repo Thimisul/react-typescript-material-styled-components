@@ -20,28 +20,36 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import { jsonEmployeesFaker } from './testeEmployees'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Divider, IconButton } from '@mui/material';
+import { Divider, IconButton, MenuItem } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { ServicesSaloonInterface, } from '../ServicesSaloon';
+import { jsonServicesFaker } from '../ServicesSaloon/testServicesSaloon';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 //Interfaces
 
 interface IFormInputs {
-  name: string
-  birthday: Date
+  cpf: string,
+  name: string,
+  birthday: Date,
+  services: ServicesSaloonInterface[]
 }
 
 
 const Employees = () => {
+
   //react-hook-form
   const { handleSubmit, formState: { errors }, control, reset } = useForm<IFormInputs>();
   //Mostrar Formulário
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
   const [listEmployees, setListEmployees] = useState<IFormInputs[]>([])
+  const [listServices, setListServices] = useState<ServicesSaloonInterface[]>([])
   //Recebe json para carregamento da lista na página
   useEffect(() => {
     setListEmployees(JSON.parse(jsonEmployeesFaker()));
+    setListServices(JSON.parse(jsonServicesFaker()));
   }, [])
   //Salva Usuário na Lista e da um reset no form
   const onSubmit: SubmitHandler<IFormInputs> = data => {
@@ -51,49 +59,83 @@ const Employees = () => {
   };
 
 
+
   return (
     <Container>
 
-      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Employee</Button>
+      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Funcionário</Button>
 
       {showForm && <Paper sx={{ p: 2 }}>
 
-        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Employee</Typography>
+        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Funcionário</Typography>
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
 
           <Grid container spacing={2}>
 
-            <Grid item xs={6}>
-              <Controller
-                name="name"
-                defaultValue=''
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField fullWidth {...field} label='Nome' />}
-              />
-              {errors.name?.type === 'required' &&
-                <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-            </Grid>
+            <Controller
+              name="cpf"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={2}>
+                  <TextField fullWidth {...field} label='CPF' />
+                </Grid>
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+
+            <Controller
+              name="name"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={8}>
+                  <TextField fullWidth {...field} label='Nome' />
+                </Grid>}
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Grid item xs={6} >
-                <Controller
-                  control={control}
-                  name="birthday"
-                  defaultValue={new Date(Date.now())}
-                  rules={{ required: true }} //optional
-                  render={({ field }) =>
-                    <DatePicker {...field}
-                      value={field.value}
-                      renderInput={props => <TextField {...props} label='Data de Nascimento'></TextField>}
-                    />
 
-
-                  }
-                />
-              </Grid>
+              <Controller
+                control={control}
+                name="birthday"
+                defaultValue={new Date(Date.now())}
+                rules={{ required: true }} //optional
+                render={({ field }) =>
+                  <DatePicker {...field}
+                    value={field.value}
+                    renderInput={props =>
+                      <Grid item xs={2} >
+                        <TextField {...props} label='Data de Nascimento'></TextField>
+                      </Grid>}
+                  />
+                }
+              />
             </LocalizationProvider>
+
+            <Controller
+              name="services"
+              defaultValue={listServices}
+              control={control}
+              render={({ field }) =>
+                <Grid item xs={2} >
+                  <Select {...field} value={1}>
+                    {listServices.map(service => (
+                      <MenuItem key={service.id} value={service.id}>{service.name}</MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+              }
+            />
+
           </Grid>
 
           <Button
@@ -112,11 +154,12 @@ const Employees = () => {
 
       <Box>
         <Divider />
-        <Typography mt={3} variant={'h4'}>Lista de Employees</Typography>
+        <Typography mt={3} variant={'h4'}>Lista de Funcionários</Typography>
         <Table size="small">
 
           <TableHead>
             <TableRow>
+              <TableCell>CPF</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Data de Nascimento</TableCell>
               <TableCell>Ações</TableCell>
@@ -126,7 +169,8 @@ const Employees = () => {
           <TableBody>
             {listEmployees?.map((Employee) => (
               Employee?.name &&
-              <TableRow key={Employee.name}>
+              <TableRow key={Employee.cpf}>
+                <TableCell>{Employee.cpf}</TableCell>
                 <TableCell>{Employee.name}</TableCell>
                 <TableCell>{Employee.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
                 <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>

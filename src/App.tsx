@@ -2,7 +2,7 @@ import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
 // Imports
-import { Clients, Employees } from './Pages';
+import { Clients, Employees, ServicesSaloon } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -32,12 +32,14 @@ export default function App() {
             </Route>
             <Route path="/profissionais" element={<Employees />}>
             </Route>
+            <Route path="/services" element={<ServicesSaloon />}>
+            </Route>
           </Routes>
 
         </Box>
         <Box sx={{ gridArea: 'sidebar', bgcolor: '#041317' }}><Sidebar /></Box>
         <Box sx={{ gridArea: 'footer', bgcolor: '#041317' }}>Footer</Box>
-      </BrowserRouter>
+      </BrowserRouter >
     </Box >
   );
 }

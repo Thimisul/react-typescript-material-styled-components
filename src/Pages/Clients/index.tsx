@@ -28,10 +28,18 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 
 //Interfaces
+// Nome, Data de Nascimento, CPF, Cidade, Estado, Rua, Cep, Número e Complemento
 
 interface IFormInputs {
+  cpf: string
   name: string
   birthday: Date
+  cep: string
+  street: string;
+  number: string;
+  neighbor: string;
+  city: string;
+  complement: string
 }
 
 
@@ -68,36 +76,142 @@ const Clients = () => {
 
           <Grid container spacing={2}>
 
-            <Grid item xs={6}>
-              <Controller
-                name="name"
-                defaultValue=''
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField fullWidth {...field} label='Nome' />}
-              />
-              {errors.name?.type === 'required' &&
-                <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-            </Grid>
+            <Controller
+              name="cpf"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={2}>
+                  <TextField fullWidth {...field} label='CPF' />
+                </Grid>
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="name"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={8}>
+                  <TextField fullWidth {...field} label='Nome' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Grid item xs={6} >
-                <Controller
-                  control={control}
-                  name="birthday"
-                  defaultValue={new Date(Date.now())}
-                  rules={{ required: true }} //optional
-                  render={({ field }) =>
-                    <DatePicker {...field}
-                      value={field.value}
-                      renderInput={props => <TextField {...props} label='Data de Nascimento'></TextField>}
-                    />
-
-
-                  }
-                />
-              </Grid>
+              <Controller
+                control={control}
+                name="birthday"
+                defaultValue={new Date(Date.now())}
+                rules={{ required: true }} //optional
+                render={({ field }) =>
+                  <DatePicker {...field}
+                    value={field.value}
+                    renderInput={props =>
+                      <Grid item xs={2} >
+                        <TextField {...props} label='Data de Nascimento'></TextField>
+                      </Grid>}
+                  />
+                }
+              />
             </LocalizationProvider>
+
+            <Controller
+              name="cep"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={2}>
+                  <TextField fullWidth {...field} label='CEP' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="street"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={9}>
+                  <TextField fullWidth {...field} label='Logradouro' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="number"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={1}>
+                  <TextField fullWidth {...field} label='N' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="neighbor"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={3}>
+                  <TextField fullWidth {...field} label='Bairro' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="city"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={5}>
+                  <TextField fullWidth {...field} label='Cidade' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="complement"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={4}>
+                  <TextField fullWidth {...field} label='Complemento' />
+                </Grid>
+
+              }
+            />
+            {errors.name?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
           </Grid>
 
@@ -122,6 +236,7 @@ const Clients = () => {
 
           <TableHead>
             <TableRow>
+              <TableCell>CPF</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Data de Nascimento</TableCell>
               <TableCell>Ações</TableCell>
@@ -131,7 +246,8 @@ const Clients = () => {
           <TableBody>
             {listClients?.map((client) => (
               client?.name &&
-              <TableRow key={client.name}>
+              <TableRow key={client.cpf}>
+                <TableCell>{client.cpf}</TableCell>
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
                 <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>

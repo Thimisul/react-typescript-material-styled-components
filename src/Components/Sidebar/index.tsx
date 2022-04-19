@@ -25,7 +25,7 @@ const Sidebar = () => {
       'icon': <BadgeOutlined />
     },
     {
-      'text': 'Serviços',
+      'text': 'services',
       'icon': <LoyaltyOutlined />
     },
     {
