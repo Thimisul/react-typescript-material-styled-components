@@ -5,12 +5,14 @@ const ArrayN = [30, 60, 90, 120];
 
 export const jsonServicesFaker = () => {
 
-  var employees = [{
-    id: 0,
-    name: '',
-    duration: 0,
-    price: ''
-  }];
+  var employees: {
+    id: number,
+    name: string,
+    duration: number,
+    price: string
+  }[];
+
+  employees = []
 
   for (let index = 1; index < 10; index++) {
     employees.push({

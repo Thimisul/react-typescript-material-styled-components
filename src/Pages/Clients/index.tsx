@@ -30,14 +30,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 //Interfaces
 // Nome, Data de Nascimento, CPF, Cidade, Estado, Rua, Cep, Número e Complemento
 
-interface IFormInputs {
+interface ClientInterface {
   cpf: string
   name: string
   birthday: Date
   cep: string
   street: string;
   number: string;
-  neighbor: string;
+  district: string;
   city: string;
   complement: string
 }
@@ -45,22 +45,33 @@ interface IFormInputs {
 
 const Clients = () => {
   //react-hook-form
-  const { handleSubmit, formState: { errors }, control, reset } = useForm<IFormInputs>();
+  const { handleSubmit, formState: { errors }, control, reset } = useForm<ClientInterface>();
   //Mostrar Formulário
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
-  const [listClients, setListClients] = useState<IFormInputs[]>([])
+  const [listClients, setListClients] = useState<ClientInterface[]>([])
+
   //Recebe json para carregamento da lista na página
   useEffect(() => {
     setListClients(JSON.parse(jsonClientsFaker()));
   }, [])
+
   //Salva Usuário na Lista e da um reset no form
-  const onSubmit: SubmitHandler<IFormInputs> = data => {
+  const onSubmit: SubmitHandler<ClientInterface> = data => {
     console.log(data)
     setShowForm(false);
     setListClients(state => [data, ...state])
     reset();
   };
+
+  const handleDeleteClient = (cpf: string) => {
+    console.log("Delete: " + cpf)
+    setListClients(listClients.filter(client => client.cpf !== cpf))
+  }
+
+  const handleEditClient = (cpf: string) => {
+    console.log("Edit: " + cpf)
+  }
 
 
   return (
@@ -82,7 +93,7 @@ const Clients = () => {
               control={control}
               rules={{ required: true }}
               render={({ field }) =>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                   <TextField fullWidth {...field} label='CPF' />
                 </Grid>
               }
@@ -96,7 +107,7 @@ const Clients = () => {
               control={control}
               rules={{ required: true }}
               render={({ field }) =>
-                <Grid item xs={8}>
+                <Grid item xs={6}>
                   <TextField fullWidth {...field} label='Nome' />
                 </Grid>
 
@@ -115,7 +126,7 @@ const Clients = () => {
                   <DatePicker {...field}
                     value={field.value}
                     renderInput={props =>
-                      <Grid item xs={2} >
+                      <Grid item xs={3} >
                         <TextField {...props} label='Data de Nascimento'></TextField>
                       </Grid>}
                   />
@@ -169,7 +180,7 @@ const Clients = () => {
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
-              name="neighbor"
+              name="district"
               defaultValue=''
               control={control}
               rules={{ required: true }}
@@ -202,7 +213,7 @@ const Clients = () => {
               name="complement"
               defaultValue=''
               control={control}
-              rules={{ required: true }}
+              rules={{ required: false }}
               render={({ field }) =>
                 <Grid item xs={4}>
                   <TextField fullWidth {...field} label='Complemento' />
@@ -250,7 +261,14 @@ const Clients = () => {
                 <TableCell>{client.cpf}</TableCell>
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
-                <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditClient(client.cpf)}>
+                    <EditOutlinedIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteClient(client.cpf)}>
+                    <ClearOutlinedIcon color='error' />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

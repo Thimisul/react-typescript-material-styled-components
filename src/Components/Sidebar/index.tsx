@@ -14,30 +14,37 @@ const Sidebar = () => {
   const listMenu = [
     {
       'text': 'Agenda',
+      'slug': 'schedule',
       'icon': <CalendarMonthOutlined />
     },
     {
       'text': 'Clientes',
+      'slug': 'clients',
       'icon': <GroupOutlined />
     },
     {
       'text': 'Profissionais',
+      'slug': 'employees',
       'icon': <BadgeOutlined />
     },
     {
-      'text': 'services',
+      'text': 'Serviços',
+      'slug': 'services',
       'icon': <LoyaltyOutlined />
     },
     {
       'text': 'Convênios',
+      'slug': 'agreements',
       'icon': <FactCheckOutlined />
     },
     {
       'text': 'Caixa',
+      'slug': 'cashier',
       'icon': <PointOfSaleOutlined />
     },
     {
       'text': 'Relatórios',
+      'slug': 'reports',
       'icon': <EqualizerOutlined />,
     }
   ]
@@ -54,7 +61,7 @@ const Sidebar = () => {
 
         <List>
           {listMenu.map((item) => (
-            <ListItem key={item.text} button component={Link} to={item.text}>
+            <ListItem key={item.text} button component={Link} to={item.slug}>
               <ListItemIcon >
                 {item.icon}
               </ListItemIcon>

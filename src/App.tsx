@@ -28,9 +28,9 @@ export default function App() {
           <Routes>
             <Route path="/home" element={<></>}>
             </Route>
-            <Route path="/clientes" element={<Clients />}>
+            <Route path="/clients" element={<Clients />}>
             </Route>
-            <Route path="/profissionais" element={<Employees />}>
+            <Route path="/employees" element={<Employees />}>
             </Route>
             <Route path="/services" element={<ServicesSaloon />}>
             </Route>
