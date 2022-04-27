@@ -2,7 +2,7 @@ import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
 // Imports
-import { Clients, Employees, ServicesSaloon } from './Pages';
+import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -33,6 +33,12 @@ export default function App() {
             <Route path="/employees" element={<Employees />}>
             </Route>
             <Route path="/services" element={<ServicesSaloon />}>
+            </Route>
+            <Route path="/agreements" element={<Agreements />}>
+            </Route>
+            <Route path="/cashier" element={<Cashier />}>
+            </Route>
+            <Route path="/schedule" element={<Schedule />}>
             </Route>
           </Routes>
 

@@ -60,6 +60,7 @@ const Employees = () => {
   const onSubmit: SubmitHandler<IFormInputs> = data => {
     console.log(data)
     setShowForm(false);
+    setServicesSelected([])
     setListEmployees(state => [data, ...state])
     reset();
   };
@@ -72,6 +73,18 @@ const Employees = () => {
       typeof value === 'string' ? value.split(',') : value,
     );
   };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
 
   function getStyles(name: string, servicesSelected: readonly string[], theme: Theme) {
     return {
@@ -147,41 +160,44 @@ const Employees = () => {
               />
             </LocalizationProvider>
 
-            <Controller
-              name="services"
-              defaultValue={servicesSelected}
-              control={control}
-              render={({ field }) =>
-                <Grid item xs={2} >
-                  <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
-                  <Select {...field}
-                    labelId="demo-multiple-chip-label"
-                    id="demo-multiple-chip"
-                    multiple
-                    value={servicesSelected}
-                    onChange={handleChange}
-                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    {listServices.map(service => (
-                      <MenuItem
-                        key={service.id}
-                        value={service.name}
-                        style={getStyles(service.name, servicesSelected, theme)} >
-                        {service.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-              }
-            />
-
+            <Grid item xs={12} >
+              <Controller
+                name="services"
+                defaultValue={[]}
+                control={control}
+                render={({ field }) =>
+                  <>
+                    <InputLabel id="demo-multiple-chip-label">Serviços</InputLabel>
+                    <Select {...field}
+                      labelId="demo-multiple-chip-label"
+                      id="demo-multiple-chip"
+                      multiple
+                      value={servicesSelected}
+                      onChange={handleChange}
+                      onBlur={field.onChange}
+                      input={<OutlinedInput fullWidth id="select-multiple-chip" label="Serviços" />}
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                      MenuProps={MenuProps}
+                    >
+                      {listServices.map(service => (
+                        <MenuItem
+                          key={service.id}
+                          value={service.name}
+                          style={getStyles(service.name, servicesSelected, theme)} >
+                          {service.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </>
+                }
+              />
+            </Grid>
           </Grid>
 
           <Button

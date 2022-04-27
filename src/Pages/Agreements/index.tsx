@@ -17,122 +17,112 @@ import Container from '@mui/material/Container';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 //Importar json Fake para testes
-import { jsonClientsFaker } from './testeClientes'
+import { jsonAgreementsFaker } from './testeAgreements'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Divider, IconButton } from '@mui/material';
-
-import { DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
+import { ServicesSaloonInterface } from '../ServicesSaloon';
 
 //Interfaces
-// Nome, Data de Nascimento, CPF, Cidade, Estado, Rua, Cep, Número e Complemento
+// Cadastro de Convênios
+// Nome Fantasia, Razão Social, CNPJ, Valor de Desconto, Cidade, Estado, Rua, Cep, Número e Complemento 
 
-export interface ClientInterface {
-  cpf: string
-  name: string
-  birthday: Date
-  cep: string
-  street: string;
-  number: string;
-  district: string;
-  city: string;
-  complement: string
+// Tabela Servicos
+// Serviço
+
+
+export interface AgreementInterface {
+  id: string;
+  fantasyName: string,
+  corporateName: string
+  cnpj: string
+  discount: string,
+  city: string,
+  state: string,
+  street: string,
+  cep: string,
+  number: string,
+  complement: string,
+  Service: ServicesSaloonInterface
 }
 
 
-const Clients = () => {
+const Agreement = () => {
   //react-hook-form
-  const { handleSubmit, formState: { errors }, control, reset } = useForm<ClientInterface>();
+  const { handleSubmit, formState: { errors }, control, reset } = useForm<AgreementInterface>();
   //Mostrar Formulário
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
-  const [listClients, setListClients] = useState<ClientInterface[]>([])
-
+  const [listAgreements, setAgreements] = useState<AgreementInterface[]>([])
   //Recebe json para carregamento da lista na página
   useEffect(() => {
-    setListClients(JSON.parse(jsonClientsFaker()));
+    setAgreements(JSON.parse(jsonAgreementsFaker()));
   }, [])
-
   //Salva Usuário na Lista e da um reset no form
-  const onSubmit: SubmitHandler<ClientInterface> = data => {
-    console.log(data)
+  const onSubmit: SubmitHandler<AgreementInterface> = data => {
     setShowForm(false);
-    setListClients(state => [data, ...state])
+    setAgreements(state => [data, ...state])
     reset();
   };
 
-  const handleDeleteClient = (cpf: string) => {
-    console.log("Delete: " + cpf)
-    setListClients(listClients.filter(client => client.cpf !== cpf))
-  }
-
-  const handleEditClient = (cpf: string) => {
-    console.log("Edit: " + cpf)
-  }
+  //const listUF = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
+  //  "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
 
 
   return (
     <Container>
 
-      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Cliente</Button>
+      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Convênio</Button>
 
       {showForm && <Paper sx={{ p: 2 }}>
 
-        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Cliente</Typography>
+        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Convênios</Typography>
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
 
           <Grid container spacing={2}>
 
             <Controller
-              name="cpf"
+              name="cnpj"
               defaultValue=''
               control={control}
               rules={{ required: true }}
               render={({ field }) =>
                 <Grid item xs={3}>
-                  <TextField fullWidth {...field} label='CPF' />
+                  <TextField fullWidth {...field} label='CNPJ' />
                 </Grid>
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.cnpj?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
-              name="name"
+              name="corporateName"
               defaultValue=''
               control={control}
               rules={{ required: true }}
               render={({ field }) =>
-                <Grid item xs={6}>
-                  <TextField fullWidth {...field} label='Nome' />
+                <Grid item xs={5}>
+                  <TextField fullWidth {...field} label='Razão Social' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.corporateName?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Controller
-                control={control}
-                name="birthday"
-                defaultValue={new Date(Date.now())}
-                rules={{ required: true }} //optional
-                render={({ field }) =>
-                  <DatePicker {...field}
-                    value={field.value}
-                    renderInput={props =>
-                      <Grid item xs={3} >
-                        <TextField {...props} label='Data de Nascimento'></TextField>
-                      </Grid>}
-                  />
-                }
-              />
-            </LocalizationProvider>
+            <Controller
+              name="fantasyName"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={4}>
+                  <TextField fullWidth {...field} label='Nome Fantasia' />
+                </Grid>
+              }
+            />
+            {errors.fantasyName?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
               name="cep"
@@ -143,10 +133,9 @@ const Clients = () => {
                 <Grid item xs={2}>
                   <TextField fullWidth {...field} label='CEP' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.cep?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
@@ -156,12 +145,11 @@ const Clients = () => {
               rules={{ required: true }}
               render={({ field }) =>
                 <Grid item xs={9}>
-                  <TextField fullWidth {...field} label='Logradouro' />
+                  <TextField fullWidth {...field} label='Rua' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.street?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
@@ -173,25 +161,23 @@ const Clients = () => {
                 <Grid item xs={1}>
                   <TextField fullWidth {...field} label='N' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.number?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
-              name="district"
+              name="state"
               defaultValue=''
               control={control}
               rules={{ required: true }}
               render={({ field }) =>
-                <Grid item xs={3}>
-                  <TextField fullWidth {...field} label='Bairro' />
+                <Grid item xs={1}>
+                  <TextField fullWidth {...field} label='UF' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.state?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
@@ -200,29 +186,42 @@ const Clients = () => {
               control={control}
               rules={{ required: true }}
               render={({ field }) =>
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                   <TextField fullWidth {...field} label='Cidade' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.city?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
             <Controller
               name="complement"
               defaultValue=''
               control={control}
-              rules={{ required: false }}
+              rules={{ required: true }}
               render={({ field }) =>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField fullWidth {...field} label='Complemento' />
                 </Grid>
-
               }
             />
-            {errors.name?.type === 'required' &&
+            {errors.complement?.type === 'required' &&
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
+            <Controller
+              name="discount"
+              defaultValue=''
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) =>
+                <Grid item xs={2}>
+                  <TextField fullWidth {...field} label='Desconto' />
+                </Grid>
+              }
+            />
+            {errors.discount?.type === 'required' &&
+              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
+
 
           </Grid>
 
@@ -242,33 +241,26 @@ const Clients = () => {
 
       <Box>
         <Divider />
-        <Typography mt={3} variant={'h4'}>Lista de Clientes</Typography>
+        <Typography mt={3} variant={'h4'}>Lista de Convênios</Typography>
         <Table size="small">
 
           <TableHead>
             <TableRow>
-              <TableCell>CPF</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Data de Nascimento</TableCell>
+              <TableCell>CNPJ</TableCell>
+              <TableCell>Nome Fantasia</TableCell>
+              <TableCell>Desconto</TableCell>
               <TableCell>Ações</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {listClients?.map((client) => (
-              client?.name &&
-              <TableRow key={client.cpf}>
-                <TableCell>{client.cpf}</TableCell>
-                <TableCell>{client.name}</TableCell>
-                <TableCell>{client.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClient(client.cpf)}>
-                    <EditOutlinedIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteClient(client.cpf)}>
-                    <ClearOutlinedIcon color='error' />
-                  </IconButton>
-                </TableCell>
+            {listAgreements?.map((agreement) => (
+              agreement?.cnpj &&
+              <TableRow key={agreement.cnpj}>
+                <TableCell>{agreement.cnpj}</TableCell>
+                <TableCell>{agreement.fantasyName}</TableCell>
+                <TableCell>{agreement.discount}%</TableCell>
+                <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -280,4 +272,4 @@ const Clients = () => {
   );
 }
 
-export default Clients;
+export default Agreement;
