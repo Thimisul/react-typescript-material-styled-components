@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Chart from './Pages/Charts';
 
 export default function App() {
   return (
@@ -39,6 +40,8 @@ export default function App() {
             <Route path="/cashier" element={<Cashier />}>
             </Route>
             <Route path="/schedule" element={<Schedule />}>
+            </Route>
+            <Route path="/reports" element={<Chart />}>
             </Route>
           </Routes>
 
