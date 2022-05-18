@@ -18,46 +18,34 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import OutlinedInput from '@mui/material/OutlinedInput';
 //Importar json Fake para testes
-import { jsonEmployeesFaker } from './testeEmployees'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Chip, Divider, IconButton, InputLabel, MenuItem, Theme, useTheme } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ServicesSaloonInterface, } from '../ServicesSaloon';
-import { jsonServicesFaker } from '../ServicesSaloon/testServicesSaloon';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
-//Interfaces
-
-interface IFormInputs {
-  id: string,
-  cpf: string,
-  name: string,
-  birthday: Date,
-  services: string[]
-}
-
+import { EmployeesType } from '../../models';
+import { getEmployees } from '../../services/employees';
 
 const Employees = () => {
   const theme = useTheme();
   //react-hook-form
-  const { handleSubmit, formState: { errors }, control, reset } = useForm<IFormInputs>();
+  const { handleSubmit, formState: { errors }, control, reset } = useForm<EmployeesType>();
   //Mostrar Formulário
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
-  const [listEmployees, setListEmployees] = useState<IFormInputs[]>([])
+  const [listEmployees, setListEmployees] = useState<EmployeesType[]>([])
   const [listServices, setListServices] = useState<ServicesSaloonInterface[]>([])
   const [servicesSelected, setServicesSelected] = useState<string[]>([])
   //Recebe json para carregamento da lista na página
 
 
   useEffect(() => {
-    setListEmployees(JSON.parse(jsonEmployeesFaker()));
-    setListServices(JSON.parse(jsonServicesFaker()));
+    getEmployees().then(employees =>setListEmployees(employees.reverse()))
   }, [])
   //Salva Usuário na Lista e da um reset no form
-  const onSubmit: SubmitHandler<IFormInputs> = data => {
+  const onSubmit: SubmitHandler<EmployeesType> = data => {
     console.log(data)
     setShowForm(false);
     setServicesSelected([])
@@ -230,9 +218,8 @@ const Employees = () => {
           </TableHead>
 
           <TableBody>
-            {listEmployees?.map((Employee) => (
-              Employee?.name &&
-              <TableRow key={Employee.cpf}>
+            {listEmployees?.map((Employee: EmployeesType) => (
+              <TableRow key={Employee.id}>
                 <TableCell>{Employee.cpf}</TableCell>
                 <TableCell>{Employee.name}</TableCell>
                 <TableCell>{Employee.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>

@@ -16,52 +16,39 @@ import Container from '@mui/material/Container';
 //Material Icons
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
-//Importar json Fake para testes
-import { jsonClientsFaker } from './testeClientes'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Divider, IconButton } from '@mui/material';
 
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers/';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { createClient, getClients } from '../../services/clients';
+import { ClientType } from '../../models/clients';
 
 
 //Interfaces
 // Nome, Data de Nascimento, CPF, Cidade, Estado, Rua, Cep, Número e Complemento
 
-export interface ClientInterface {
-  cpf: string
-  name: string
-  birthday: Date
-  cep: string
-  street: string;
-  number: string;
-  district: string;
-  city: string;
-  complement: string
-}
-
-
 const Clients = () => {
   //react-hook-form
-  const { handleSubmit, formState: { errors }, control, reset } = useForm<ClientInterface>();
+  const { handleSubmit, formState: { errors }, control, reset } = useForm<ClientType>();
   //Mostrar Formulário
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
-  const [listClients, setListClients] = useState<ClientInterface[]>([])
+  const [listClients, setListClients] = useState<ClientType[]>([])
 
   //Recebe json para carregamento da lista na página
   useEffect(() => {
-    setListClients(JSON.parse(jsonClientsFaker()));
+    getClients().then(clients =>setListClients(clients.reverse()))
   }, [])
 
   //Salva Usuário na Lista e da um reset no form
-  const onSubmit: SubmitHandler<ClientInterface> = data => {
-    console.log(data)
-    setShowForm(false);
-    setListClients(state => [data, ...state])
+  const onSubmit: SubmitHandler<ClientType> = (data: ClientType) => {
+    createClient(data)
+    .then(client => setListClients(state => [client, ...state]))
     reset();
+    setShowForm(false)
   };
 
   const handleDeleteClient = (cpf: string) => {
@@ -125,7 +112,7 @@ const Clients = () => {
                 render={({ field }) =>
                   <DatePicker {...field}
                     value={field.value}
-                    renderInput={props =>
+                    renderInput={(props: unknown) =>
                       <Grid item xs={3} >
                         <TextField {...props} label='Data de Nascimento'></TextField>
                       </Grid>}
@@ -255,9 +242,8 @@ const Clients = () => {
           </TableHead>
 
           <TableBody>
-            {listClients?.map((client) => (
-              client?.name &&
-              <TableRow key={client.cpf}>
+            {listClients?.map((client: ClientType) => (
+              <TableRow key={client.id}>
                 <TableCell>{client.cpf}</TableCell>
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.birthday.toLocaleString('pt-BR', { year: 'numeric', month: 'numeric', day: 'numeric' })}</TableCell>
