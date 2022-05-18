@@ -12,6 +12,7 @@ interface DemoAppState {
   currentEvents: EventApi[]
 }
 
+
 export default class DemoApp extends React.Component<{}, DemoAppState> {
 
   state: DemoAppState = {
