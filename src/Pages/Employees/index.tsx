@@ -226,12 +226,12 @@ const Employees = () => {
                 {listServices &&
                   <TableCell>
                     {Employee.services.map(service =>
-                    (parseInt(service) % 2 === 0 ?
+                    (
                       <Chip
                         sx={{ m: 1 }}
-                        key={service}
-                        label={listServices[parseInt(service)].name} />
-                      : <></>
+                        key={service.id!}
+                        label={service.name} />
+                     
                     ))}
                   </TableCell>}
                 <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>

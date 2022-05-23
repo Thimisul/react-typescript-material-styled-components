@@ -6,6 +6,8 @@ import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule } fro
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Chart from './Pages/Charts';
+import CalendarBig from './Pages/Scheduler-big';
+import CalendarFull from './Pages/Schedule';
 
 export default function App() {
   return (
@@ -39,7 +41,9 @@ export default function App() {
             </Route>
             <Route path="/cashier" element={<Cashier />}>
             </Route>
-            <Route path="/schedule" element={<Schedule />}>
+            <Route path="/scheduleBig" element={<CalendarBig />}>
+            </Route>
+            <Route path="/scheduleFull" element={<CalendarFull />}>
             </Route>
             <Route path="/reports" element={<Chart />}>
             </Route>
