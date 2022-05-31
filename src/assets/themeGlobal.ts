@@ -1,7 +1,7 @@
 
-import createTheme from '@mui/material/styles/createTheme';
+import {createTheme, responsiveFontSizes} from '@mui/material/styles';
 
-export const theme = createTheme({
+let theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -45,7 +45,7 @@ export const theme = createTheme({
             height: 24,
           },
           track: {
-            borderRadius: 13,
+            borderRadius: 40,
             border: '1px solid #bdbdbd',
             backgroundColor: '#fafafa',
             opacity: 1,
@@ -62,3 +62,7 @@ export const theme = createTheme({
     }
   }
 });
+
+theme = responsiveFontSizes(theme)
+
+export default theme

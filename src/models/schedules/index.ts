@@ -12,8 +12,8 @@ export type SchedulesType = {
 
 export type EventScheduleType = {
     title: string,
-    start: Date,
-    end: Date,
+    start: string,
+    end: string,
     extendedProps:{
         id?: string
         client: string,

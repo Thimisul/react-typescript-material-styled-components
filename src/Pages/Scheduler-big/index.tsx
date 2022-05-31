@@ -5,7 +5,6 @@ import 'moment-timezone'
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { theme } from "../../assets/themeGlobal";
 import moment from "moment";
 
 
@@ -31,7 +30,6 @@ export const CalendarBig = () => {
         defaultView='week'
         localizer={localizer}
         events={events}
-        style={{ height: '100vh', color: theme.palette.primary.light, backgroundColor: theme.palette.background.paper}}
       />
     </div>
   );
