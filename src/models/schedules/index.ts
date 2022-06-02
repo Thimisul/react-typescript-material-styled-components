@@ -5,7 +5,6 @@ export type SchedulesType = {
     client: ClientsType,
     service: ServicesSaloonType,
     employee: EmployeesType
-    date: Date,
     start: Date,
     end: Date
 }

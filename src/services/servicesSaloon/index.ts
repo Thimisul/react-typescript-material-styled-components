@@ -1,9 +1,9 @@
 import axios from "axios";
-import { EmployeesType } from "../../models";
+import { ServicesSaloonType } from "../../models";
 
-export const getEmployees = async ():Promise<EmployeesType[]> => {
+export const getServiceSaloons = async ():Promise<ServicesSaloonType[]> => {
   return axios
-    .get(`${process.env.REACT_APP_API_HOST}/employees`)
+    .get(`${process.env.REACT_APP_API_HOST}/servicesSaloons`)
     .then((res) => {
       console.log(res.data);
       return res.data;
@@ -13,9 +13,9 @@ export const getEmployees = async ():Promise<EmployeesType[]> => {
     });
 };
 
-export const getEmployeeById = async (id: any) => {
+export const getServiceSaloonById = async (id: any) => {
   return axios
-    .get(`${process.env.REACT_APP_API_HOST}/employees/${id}`)
+    .get(`${process.env.REACT_APP_API_HOST}/servicesSaloon/${id}`)
     .then((res) => {
       console.log(res.data);
       return res.data;
@@ -25,9 +25,9 @@ export const getEmployeeById = async (id: any) => {
     });
 };
 
-export const createEmployee = (client: EmployeesType) => {
+export const createServiceSaloon = (serviceSaloon: ServicesSaloonType) => {
     return axios
-      .post(`${process.env.REACT_APP_API_HOST}/employee/`, client)
+      .post(`${process.env.REACT_APP_API_HOST}/servicesSaloons/`, serviceSaloon)
       .then((res) => {
         console.log(res.data);
         return res.data;
