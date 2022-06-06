@@ -2,7 +2,7 @@ import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
 // Imports
-import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule } from './Pages';
+import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule, ScheduleDevExpress } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Chart from './Pages/Charts';
@@ -40,7 +40,9 @@ export default function App() {
             </Route>
             <Route path="/cashier" element={<Cashier />}>
             </Route>
-            <Route path="/schedule" element={<CalendarFull />}>
+            <Route path="/schedulefull" element={<Schedule />}>
+            </Route>
+            <Route path="/schedule" element={<ScheduleDevExpress />}>
             </Route>
             <Route path="/reports" element={<Chart />}>
             </Route>
