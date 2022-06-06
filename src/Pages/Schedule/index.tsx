@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import brLocale from '@fullcalendar/core/locales/pt-br'
-import FullCalendar, { DateSelectArg, EventClickArg, EventInput } from '@fullcalendar/react'
+import FullCalendar, { DateSelectArg, EventClickArg, EventHoveringArg, EventInput } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { Box, Button, Container, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Select, MenuItem } from '@mui/material'
+import { Box, Button, Container, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Select, MenuItem, Popover } from '@mui/material'
 import SchedulesType from '../../models/schedules'
 import './myStyleFullCalendat.css'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
@@ -21,9 +21,10 @@ import theme from '../../assets/themeGlobal'
 const CalendarFull = () => {
 
   const [open, setOpen] = useState<boolean>(false)
+  const [openPopover, setOpenPopover] = useState<boolean>(false)
   const [selectInfoDate, setSelectInfoDate] = useState<DateSelectArg>()
   //const [event, setEvent] = useState<EventScheduleType>()
-  //const [events, setEvents] = useState<EventInput[]>([])
+  const [events, setEvents] = useState<EventInput[]>([])
   //const [calendarFullState, setcalendarFullState] = useState<calendarFullType>()
   //const [client, setClient] = useState<ClientType>(CLIENT_DEFAULT)
   const [clients, setClients] = useState<ClientsType[]>()
@@ -33,25 +34,7 @@ const CalendarFull = () => {
 
   const { handleSubmit, formState: { errors }, control, reset } = useForm<SchedulesType>();
 
-  const eventSource = async () => {
-    let events: EventInput[] = []
-    getSchedules().then(response => response.map( schedule => {
-      events.push({
-        title: schedule.client.name,
-        start: schedule.start,
-        end: schedule.end,
-        extendedProps: {
-          client: schedule.client.name,
-          employee: schedule.employee.name,
-          service: schedule.service.name,
-        }
-      })
-    })).catch(err => err)
-    return events
-  }
-
-
-  // useEffect(()=> {
+  // const eventSource = async () => {
   //   let events: EventInput[] = []
   //   getSchedules().then(response => response.map( schedule => {
   //     events.push({
@@ -64,9 +47,25 @@ const CalendarFull = () => {
   //         service: schedule.service.name,
   //       }
   //     })
-  //   }))
-  //   setEvents(events)
-  // },[])
+  //   })).catch(err => err)
+  //   return events
+  // }
+
+
+  useEffect(()=> {
+    getSchedules().then(response => response.map( schedule => {
+      setEvents(state => [{
+        title: schedule.client.name,
+        start: schedule.start,
+        end: schedule.end,
+        extendedProps: {
+          client: schedule.client.name,
+          employee: schedule.employee.name,
+          service: schedule.service.name,
+        }
+      }, ...state])
+    }))
+  },[])
 
   const onSubmit: SubmitHandler<SchedulesType> = (data: SchedulesType) => {
     setOpen(false)
@@ -120,6 +119,10 @@ const CalendarFull = () => {
     }
   }
 
+  // const handleHoverEvent = (hoverEvent: EventHoveringArg) => {
+  //   hoverEvent.view
+  // }
+
   // const handleEvents = (events: EventApi[]) => {
   //   setcalendarFullState({
   //     currentEvents: events
@@ -151,13 +154,27 @@ const CalendarFull = () => {
           selectable={true} //Ativar selecionar grid
           selectMirror={false} //Selecionar grid não aparecer informação antes de adicionada
 
-          events={eventSource} // alternatively, use the `events` setting to fetch from a feed
+          events={events} // alternatively, use the `events` setting to fetch from a feed
           select={handleDateSelect}
           eventClick={handleEventClick}
           //rerenderDelay={1000}
           //eventAdd={}
           //eventChange={function () { }}
           //eventRemove={function () { }}
+          eventMouseEnter={event => setOpenPopover(true)}
+          eventDidMount={(info) => <Popover 
+            anchorReference="anchorPosition"
+            anchorPosition={{ top: 0, left: 400 }}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'center',
+            }} open={openPopover}>
+            The content of the Popover.
+          </Popover>}
         />
         <Dialog open={open} onClose={() => setOpen(false)}>
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
