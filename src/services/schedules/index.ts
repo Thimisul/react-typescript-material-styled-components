@@ -1,7 +1,7 @@
 import axios from "axios";
 import { SchedulesType } from "../../models";
 
-export const getSchedules = async ():Promise<SchedulesType[]> => {
+export const getSchedules = async (): Promise<SchedulesType[]> => {
   return axios
     .get(`${process.env.REACT_APP_API_HOST}/schedules`)
     .then((res) => {
@@ -14,21 +14,23 @@ export const getSchedules = async ():Promise<SchedulesType[]> => {
     });
 };
 
-export const getScheduleById = async (id: any) => {
+export const getScheduleById = async (id: string | number): Promise<SchedulesType> => {
   return axios
-    .get(`${process.env.REACT_APP_API_HOST}/schedule/${id}`)
+    .get(`${process.env.REACT_APP_API_HOST}/schedules/${id}`)
     .then((res) => {
       console.log(res.data);
       return res.data;
     })
     .catch((e) => {
-        return console.log('algo deu errado\n' + e);
+      return console.log('algo deu errado\n' + e);
     });
 };
 
-export const createSchedule = (schedule: SchedulesType) => {
+export const createSchedule = (schedule: SchedulesType): Promise<SchedulesType> => {
+
+  if (schedule.id) {
     return axios
-      .post(`${process.env.REACT_APP_API_HOST}/schedules/`, schedule)
+      .post(`${process.env.REACT_APP_API_HOST}/schedules/${schedule.id}`, schedule)
       .then((res) => {
         console.log(res.data);
         return res.data;
@@ -36,4 +38,15 @@ export const createSchedule = (schedule: SchedulesType) => {
       .catch((e) => {
         return e;
       });
-  };
+  } else {
+    return axios
+      .post(`${process.env.REACT_APP_API_HOST}/schedules`, schedule)
+      .then((res) => {
+        console.log(res.data);
+        return res.data;
+      })
+      .catch((e) => {
+        return e;
+      });
+  }
+};

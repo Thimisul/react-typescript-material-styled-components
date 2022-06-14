@@ -26,10 +26,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { createClient, getClients } from '../../services/clients';
 import { ClientType } from '../../models/clients';
 
-
-//Interfaces
-// Nome, Data de Nascimento, CPF, Cidade, Estado, Rua, Cep, Número e Complemento
-
 const Clients = () => {
   //react-hook-form
   const { handleSubmit, formState: { errors }, control, reset } = useForm<ClientType>();
@@ -40,13 +36,13 @@ const Clients = () => {
 
   //Recebe json para carregamento da lista na página
   useEffect(() => {
-    getClients().then(clients =>setListClients(clients.reverse()))
+    getClients().then(clients => setListClients(clients.reverse()))
   }, [])
 
   //Salva Usuário na Lista e da um reset no form
   const onSubmit: SubmitHandler<ClientType> = (data: ClientType) => {
     createClient(data)
-    .then(client => setListClients(state => [client, ...state]))
+      .then((client: ClientType) => setListClients(state => [client, ...state]))
     reset();
     setShowForm(false)
   };
@@ -111,10 +107,9 @@ const Clients = () => {
                 rules={{ required: true }} //optional
                 render={({ field }) =>
                   <DatePicker {...field}
-                    value={field.value}
-                    renderInput={(props: unknown) =>
+                    renderInput={(props) =>
                       <Grid item xs={3} >
-                        <TextField {...props} label='Data de Nascimento'></TextField>
+                        <TextField value={field.value} {...props} label='Data de Nascimento'></TextField>
                       </Grid>}
                   />
                 }

@@ -2,11 +2,10 @@ import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
 // Imports
-import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule, ScheduleDevExpress } from './Pages';
+import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule, ScheduleAldabil } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Chart from './Pages/Charts';
-import CalendarFull from './Pages/Schedule';
 
 export default function App() {
   return (
@@ -42,7 +41,7 @@ export default function App() {
             </Route>
             <Route path="/schedulefull" element={<Schedule />}>
             </Route>
-            <Route path="/schedule" element={<ScheduleDevExpress />}>
+            <Route path="/schedule" element={<ScheduleAldabil />}>
             </Route>
             <Route path="/reports" element={<Chart />}>
             </Route>

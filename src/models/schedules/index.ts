@@ -1,7 +1,7 @@
 import { ClientsType, EmployeesType, ServicesSaloonType } from ".."
 
 export type SchedulesType = {
-    id?: string,
+    id?: string | number,
     client: ClientsType,
     service: ServicesSaloonType,
     employee: EmployeesType
@@ -10,11 +10,11 @@ export type SchedulesType = {
 }
 
 export type EventScheduleType = {
-    title: string,
+    title: string | number,
     start: string,
     end: string,
-    extendedProps:{
-        id?: string
+    extendedProps: {
+        id?: string | number
         client: string,
         service: string,
         employee: string,

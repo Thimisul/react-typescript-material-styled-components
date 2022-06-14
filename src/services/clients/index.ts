@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ClientType } from "../../models/clients";
 
-export const getClients = async ():Promise<ClientType[]> => {
+export const getClients = async (): Promise<ClientType[]> => {
   return axios
     .get(`${process.env.REACT_APP_API_HOST}/clients`)
     .then((res) => {
@@ -13,7 +13,7 @@ export const getClients = async ():Promise<ClientType[]> => {
     });
 };
 
-export const getClientById = async (id: any) => {
+export const getClientById = async (id: any): Promise<ClientType> => {
   return axios
     .get(`${process.env.REACT_APP_API_HOST}/clients/${id}`)
     .then((res) => {
@@ -21,13 +21,15 @@ export const getClientById = async (id: any) => {
       return res.data;
     })
     .catch((e) => {
-        return console.log('algo deu errado\n' + e);
+      return console.log('algo deu errado\n' + e);
     });
 };
 
-export const createClient = (client: ClientType) => {
+export const createClient = (client: ClientType): Promise<ClientType> => {
+
+  if (client.id) {
     return axios
-      .post(`${process.env.REACT_APP_API_HOST}/clients/`, client)
+      .patch(`${process.env.REACT_APP_API_HOST}/clients/`, client)
       .then((res) => {
         console.log(res.data);
         return res.data;
@@ -35,4 +37,15 @@ export const createClient = (client: ClientType) => {
       .catch((e) => {
         return e;
       });
-  };
+  } else {
+    return axios
+      .post(`${process.env.REACT_APP_API_HOST}/clients/${client.id}`, client)
+      .then((res) => {
+        console.log(res.data);
+        return res.data;
+      })
+      .catch((e) => {
+        return e;
+      });
+  }
+};
