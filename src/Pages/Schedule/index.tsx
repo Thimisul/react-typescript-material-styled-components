@@ -209,7 +209,7 @@ const CalendarFull = () => {
             />
 
             <Controller
-              name="employee"
+              name="employee.id"
               control={control}
               rules={{ required: true }}
               render={

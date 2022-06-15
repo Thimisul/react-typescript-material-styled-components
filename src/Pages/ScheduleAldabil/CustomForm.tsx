@@ -4,7 +4,7 @@ import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { ClientsType, SchedulesType, EmployeesType } from "../../models";
 import { getEmployeeById, getEmployees } from "../../services/employees";
 import { createSchedule, getScheduleById } from "../../services/schedules";
-import { getClientById, getClients } from "../../services/clients"
+import { getClients } from "../../services/clients"
 import { useEffect, useState } from "react";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -22,19 +22,21 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
 
     if (scheduler.edited) {
       getScheduleById(scheduler.edited.event_id).then(schedule => {
-        setValue('client.id', schedule.client.id)
-        setValue('employee.id', schedule.employee.id)
-        setValue('service.id', schedule.service.id)
+        setValue('client', schedule.client)
+        setValue('employee', schedule.employee)
+        getEmployeeById(schedule.employee.id!).then(response => setEmployee(response))
+        setValue('service', schedule.service)
         setValue('start', schedule.start)
         setValue('end', schedule.end)
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [clients, setClients] = useState<ClientsType[]>()
   const [employees, setEmployees] = useState<EmployeesType[]>()
   const [employee, setEmployee] = useState<EmployeesType>()
-  const { handleSubmit, formState: { errors }, control, reset, setValue } = useForm<SchedulesType>();
+  const { handleSubmit, control, reset, setValue } = useForm<SchedulesType>();
 
   const event = scheduler.edited;
 
@@ -54,12 +56,11 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
         } as ProcessedEvent
       })
 
-      console.log(added_updated_event)
-
       scheduler.onConfirm(added_updated_event, event ? "edit" : "create");
       scheduler.close();
     } finally {
       scheduler.loading(false);
+      reset()
     }
   }
 
@@ -74,7 +75,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
           </DialogContentText>
 
           <Controller
-            name="client"
+            name="client.id"
             control={control}
             rules={{ required: true }}
             render={
@@ -97,7 +98,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
           />
 
           <Controller
-            name="employee"
+            name="employee.id"
             control={control}
             rules={{ required: true }}
             render={
@@ -126,7 +127,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
 
           {employee &&
             <Controller
-              name="service"
+              name="service.id"
               control={control}
               rules={{ required: true }}
               render={
@@ -194,7 +195,8 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
           </Button>
         </DialogActions>
       </Box>
-    </Box>)
+    </Box>
+  )
 }
 
 export default CustomForm

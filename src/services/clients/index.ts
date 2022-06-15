@@ -27,9 +27,9 @@ export const getClientById = async (id: any): Promise<ClientType> => {
 
 export const createClient = (client: ClientType): Promise<ClientType> => {
 
-  if (client.id) {
+  if (!client.id) {
     return axios
-      .patch(`${process.env.REACT_APP_API_HOST}/clients/`, client)
+      .post(`${process.env.REACT_APP_API_HOST}/clients/`, client)
       .then((res) => {
         console.log(res.data);
         return res.data;
@@ -39,7 +39,7 @@ export const createClient = (client: ClientType): Promise<ClientType> => {
       });
   } else {
     return axios
-      .post(`${process.env.REACT_APP_API_HOST}/clients/${client.id}`, client)
+      .patch(`${process.env.REACT_APP_API_HOST}/clients/${client.id}`, client)
       .then((res) => {
         console.log(res.data);
         return res.data;

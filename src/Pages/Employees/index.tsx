@@ -23,10 +23,10 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Chip, Divider, IconButton, InputLabel, MenuItem, Theme, useTheme } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { ServicesSaloonInterface, } from '../ServicesSaloon';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { EmployeesType } from '../../models';
-import { getEmployees } from '../../services/employees';
+import { EmployeesType, ServicesSaloonType } from '../../models';
+import { createEmployee, getEmployees } from '../../services/employees';
+import { getServiceSaloons } from '../../services/servicesSaloon';
 
 const Employees = () => {
   const theme = useTheme();
@@ -36,20 +36,20 @@ const Employees = () => {
   const [showForm, setShowForm] = useState<Boolean>(false);
   //State da Lista de Usuários Cadastrados
   const [listEmployees, setListEmployees] = useState<EmployeesType[]>([])
-  const [listServices, setListServices] = useState<ServicesSaloonInterface[]>([])
+  const [listServices, setListServices] = useState<ServicesSaloonType[]>([])
   const [servicesSelected, setServicesSelected] = useState<string[]>([])
   //Recebe json para carregamento da lista na página
 
 
   useEffect(() => {
-    getEmployees().then(employees =>setListEmployees(employees.reverse()))
+      getServiceSaloons().then(services => setListServices(services))
+      getEmployees().then(employees =>setListEmployees(employees.reverse()))
   }, [])
   //Salva Usuário na Lista e da um reset no form
   const onSubmit: SubmitHandler<EmployeesType> = data => {
-    console.log(data)
     setShowForm(false);
     setServicesSelected([])
-    setListEmployees(state => [data, ...state])
+    createEmployee(data).then(employee => setListEmployees(state => [employee, ...state]))
     reset();
   };
 
@@ -151,7 +151,6 @@ const Employees = () => {
             <Grid item xs={12} >
               <Controller
                 name="services"
-                defaultValue={[]}
                 control={control}
                 render={({ field }) =>
                   <>
