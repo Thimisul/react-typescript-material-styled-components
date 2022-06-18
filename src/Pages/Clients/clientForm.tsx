@@ -1,21 +1,25 @@
-import { Paper, Typography, Box, Grid, TextField, Button, IconButton } from "@mui/material";
+import { Paper, Typography, Box, Grid, TextField, Button, IconButton, Avatar } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ClientType from "../../models/clients";
-import { createClient, editClient } from "../../services/clients";
+import { createClient, destroyClient, editClient } from "../../services/clients";
 import { useSnackbar } from 'notistack';
 
 
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 
-type ClientFormType = {
-   client? : ClientType
-   setShowForm : React.Dispatch<React.SetStateAction<boolean>>
-   onCloseForm: Function
+export type ClientFormType = {
+   type: 'show'| 'new' | 'delete' 
 }
 
-export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) => {
+interface ClientFormProps extends ClientFormType {
+   client? : ClientType
+   onCloseForm: Function
+   
+}
+
+export const ClientForm = ({client, onCloseForm, type}: ClientFormProps) => {
 
    const { enqueueSnackbar } = useSnackbar();
 
@@ -45,30 +49,38 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
 
    //Salva Usuário na Lista e da um reset no form
    const onSubmit: SubmitHandler<ClientType> = (data: ClientType) => {
-      client ? editClient(data).then(client => 
-         enqueueSnackbar(data.name + " Editado com Sucesso",{variant: 'success'}))
-      : createClient(data).then(client =>  enqueueSnackbar(client.name + " Cadastrado com Sucesso", {variant: 'success'}))
+      switch(type){
+
+      case "show": editClient(data).then(() => enqueueSnackbar(data.name + " Editado com Sucesso",{variant: 'success'}))
+      break;
+      case "new": createClient(data).then(client =>  enqueueSnackbar(client.name + " Cadastrado com Sucesso", {variant: 'success'}))
+      break;
+      case "delete":  destroyClient(data.id).then(() =>  enqueueSnackbar(data.name + " Deletado com Sucesso", {variant: 'info'}))
+      }
       reset();
       onCloseForm()
-      
-      // setShowForm(false);
    };
 
    return (
       <Paper sx={{ p: 2 }}>
          <Typography variant="h4" color="primary" gutterBottom sx={{ mb: 4, display: 'flex', justifyContent: 'space-between' }}>
-            Cadastro de Cliente <IconButton onClick={() => onCloseForm()}><ClearOutlinedIcon></ClearOutlinedIcon></IconButton>
+         {client? client.name : "Cadastro de Cliente"} <IconButton onClick={() => onCloseForm()}><ClearOutlinedIcon></ClearOutlinedIcon></IconButton>
          </Typography>
 
          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
+
+               <Grid item xs={2}>
+               <Avatar alt="Remy Sharp" sx={{ml: 2, width: 56, height: 56 }} src="https://source.unsplash.com/800x600/?avatar" />
+               </Grid>
+
                <Controller
                   name="cpf"
                   defaultValue=""
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                     <Grid item xs={3}>
+                     <Grid item xs={5}>
                         <TextField fullWidth {...field} label="CPF" />
                      </Grid>
                   )}
@@ -79,24 +91,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                   </Typography>
                )}
 
-               <Controller
-                  name="name"
-                  defaultValue=""
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                     <Grid item xs={6}>
-                        <TextField fullWidth {...field} label="Nome" />
-                     </Grid>
-                  )}
-               />
-               {errors.name?.type === "required" && (
-                  <Typography variant="inherit" color={"tomato"}>
-                     * Nome deve ser preenchido
-                  </Typography>
-               )}
-
-                  <Controller
+<Controller
                      control={control}
                      name="birthday"
                      defaultValue={new Date(Date.now()).toISOString()}
@@ -105,7 +100,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                         <DatePicker
                            {...field}
                            renderInput={(props) => (
-                              <Grid item xs={3}>
+                              <Grid item xs={5}>
                                  <TextField
                                     value={field.value}
                                     {...props}
@@ -117,13 +112,31 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                      )}
                   />
 
+
+               <Controller
+                  name="name"
+                  defaultValue=""
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                     <Grid item xs={12}>
+                        <TextField fullWidth {...field} label="Nome" />
+                     </Grid>
+                  )}
+               />
+               {errors.name?.type === "required" && (
+                  <Typography variant="inherit" color={"tomato"}>
+                     * Nome deve ser preenchido
+                  </Typography>
+               )}
+
                <Controller
                   name="cep"
                   defaultValue=""
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                     <Grid item xs={2}>
+                     <Grid item xs={3}>
                         <TextField fullWidth {...field} label="CEP" />
                      </Grid>
                   )}
@@ -140,7 +153,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                     <Grid item xs={9}>
+                     <Grid item xs={7}>
                         <TextField fullWidth {...field} label="Logradouro" />
                      </Grid>
                   )}
@@ -157,7 +170,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                     <Grid item xs={1}>
+                     <Grid item xs={2}>
                         <TextField fullWidth {...field} label="N" />
                      </Grid>
                   )}
@@ -174,7 +187,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                     <Grid item xs={3}>
+                     <Grid item xs={5}>
                         <TextField fullWidth {...field} label="Bairro" />
                      </Grid>
                   )}
@@ -191,7 +204,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                     <Grid item xs={5}>
+                     <Grid item xs={7}>
                         <TextField fullWidth {...field} label="Cidade" />
                      </Grid>
                   )}
@@ -208,7 +221,7 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                   control={control}
                   rules={{ required: false }}
                   render={({ field }) => (
-                     <Grid item xs={4}>
+                     <Grid item xs={12}>
                         <TextField fullWidth {...field} label="Complemento" />
                      </Grid>
                   )}
@@ -220,14 +233,25 @@ export const ClientForm = ({client, setShowForm, onCloseForm}: ClientFormType) =
                )}
                  
             </Grid>
-            <Button
+            {type === "delete"? 
+             <Button
+             type="submit"
+             variant="outlined"
+             fullWidth
+             color="error"
+             sx={{py:2, my: 2}}
+          >
+             Deletar
+          </Button>
+            :  <Button
                      type="submit"
                      variant="outlined"
                      fullWidth
                      sx={{py:2, my: 2}}
                   >
-                     {client ? "Salvar" : "Cadastrar"}
-                  </Button>
+                     {client ?  "Salvar" : "Cadastrar"}
+                  </Button>}
+           
          </Box>
       </Paper>
    );

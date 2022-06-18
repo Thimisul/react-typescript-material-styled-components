@@ -14,15 +14,17 @@ import { Dialog, Divider, IconButton } from "@mui/material";
 //Material Icons
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-//Models
+//Models & Types
 import { ClientType } from "../../models/clients";
-import { destroyClient, getClients } from "../../services/clients";
-import ClientForm from "./clientForm";
+//Services
+import { getClients } from "../../services/clients";
+//Component
+import ClientForm, { ClientFormType } from "./clientForm";
 
 const Clients = () => {
 
    //Mostrar Formulário
-   const [showForm, setShowForm] = useState<boolean>(false);
+   const [formType, setTFormType] = useState<ClientFormType>()
    //State da Lista de Usuários Cadastrados
    const [listClients, setListClients] = useState<ClientType[]>([]);
    const [clientEdit, setClientEdit] = useState<ClientType>()
@@ -32,19 +34,16 @@ const Clients = () => {
       getClients().then((clients) => setListClients(clients.reverse()));
    }, []);
 
-   const handleDeleteClient = (id: string | number) => {
-      destroyClient(id).then(res => setListClients(listClients.filter((client) => client.id !== id)));
-   }
 
-   const handleEditClient = (client: ClientType) => {
+   const handleOpenForm = (client?: ClientType, formType?: ClientFormType) => {
       setClientEdit(client)
-      setShowForm(true)
+      setTFormType(formType)
    };
 
    const onCloseForm = () => {
       setClientEdit(undefined)
       getClients().then((clients) => setListClients(clients.reverse()));
-      setShowForm(false)
+      setTFormType(undefined)
    }
 
    return (
@@ -52,7 +51,7 @@ const Clients = () => {
          <Button
             sx={{ mt: 2 }}
             variant="contained"
-            onClick={() => setShowForm(true)}
+            onClick={() => handleOpenForm(clientEdit, {type: 'new'})}
          >
             Adicionar um Novo Cliente
          </Button>
@@ -74,20 +73,20 @@ const Clients = () => {
 
                <TableBody>
                   {listClients?.map((client: ClientType) => (
-                     <TableRow key={client.id}>
-                        <TableCell>{client.cpf}</TableCell>
+                     <TableRow key={client.id} hover selected={client.id === clientEdit?.id}>
+                        <TableCell>{client.cpf} </TableCell>
                         <TableCell>{client.name}</TableCell>
                         <TableCell>
-                           {client.birthday}
+                           {new Date(client.birthday).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
                            <IconButton
-                              onClick={() => handleEditClient(client)}
+                           onClick={() => handleOpenForm(client, {type: "show"})}
                            >
                               <EditOutlinedIcon />
                            </IconButton>
                            <IconButton
-                              onClick={() => handleDeleteClient(client.id!)}
+                              onClick={() => handleOpenForm(client, { type: "delete"})}
                            >
                               <DeleteOutlinedIcon color="error" />
                            </IconButton>
@@ -98,8 +97,8 @@ const Clients = () => {
             </Table>
          </Box>
 
-         <Dialog maxWidth="lg" open={showForm} onClose={onCloseForm}>
-            <ClientForm client={clientEdit} setShowForm={setShowForm} onCloseForm={onCloseForm}></ClientForm>
+         <Dialog open={formType? true : false} onClose={onCloseForm}>
+            {formType && <ClientForm client={clientEdit} onCloseForm={onCloseForm} type={formType.type}></ClientForm>}
          </Dialog>
 
       </Container>
