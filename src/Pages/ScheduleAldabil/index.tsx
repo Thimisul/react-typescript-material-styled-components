@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Scheduler } from "@aldabil/react-scheduler";
 import Container from "@mui/material/Container";
-import { createSchedule, getSchedules, destroySchedule } from "../../services/schedules";
+import { getSchedules, destroySchedule, createEditSchedule } from "../../services/schedules";
 import { ProcessedEvent } from "@aldabil/react-scheduler/dist/types";
 import parseISO from "date-fns/parseISO";
-import ptBR from "date-fns/locale/pt-BR";
+import locale from "date-fns/locale/pt-BR";
 import CustomForm from "./CustomForm";
 import { Alert, Button, Grid, Typography } from "@mui/material";
 import theme from "../../assets/themeGlobal";
@@ -43,7 +43,11 @@ export const SchedulerAldabil = () => {
       ProcessedEvent[]
    > => {
       const response = await getSchedules();
-      return response.map((schedule) => scheduleToPromissedEvent(schedule));
+      console.log("To PromisseEvent");
+      console.log(response);  
+      return response.map(schedule =>{
+         return scheduleToPromissedEvent(schedule);
+      })
    };
 
    const handleOnDelete = async (deletedId: string | number): Promise<string | number | void> => {
@@ -52,15 +56,20 @@ export const SchedulerAldabil = () => {
    }
 
    const handleDropEvent = async (
-      _droppedOn: Date,
+      droppedOn: Date,
       updatedEvent: ProcessedEvent,
       originalEvent: ProcessedEvent
    ): Promise<void | ProcessedEvent> => {
-
-      const response = await createSchedule({
+      console.log("Original Event")
+      console.log(originalEvent)
+      console.log("Update Event")
+      console.log(updatedEvent)
+      console.log("Droped On")
+      console.log(droppedOn)
+      const response = await createEditSchedule({
          id: originalEvent.event_id,
-         start: updatedEvent.start,
-         end: updatedEvent.end,
+         start: updatedEvent.start.toString(),
+         end: updatedEvent.end.toString(),
          client: updatedEvent.client.id,
          employee: updatedEvent.employee.id,
          service: updatedEvent.service.id,
@@ -70,16 +79,14 @@ export const SchedulerAldabil = () => {
    };
 
    const scheduleToPromissedEvent = (schedule: SchedulesType) => {
-      console.log("ScheduleToPromissedEvent");
-      console.log(schedule);
       return {
          event_id: schedule.id!,
-         title: schedule.client.name,
-         start: schedule.start,
-         end: schedule.end!,
-         client: schedule.client.name,
-         employee: schedule.employee.name,
-         service: schedule.service.name,
+         title: schedule.client.name ?? "Sem nome de Cliente",
+         start: new Date(schedule.start),
+         end: new Date(schedule.end!),
+         client: schedule.client.name ?? "Sem nome de Cliente",
+         employee: schedule.employee.name ?? "Sem nome de Funcionário",
+         service: schedule.service.name ?? "Sem nome de Serviço",
       } as ProcessedEvent;
    };
 
@@ -93,7 +100,7 @@ export const SchedulerAldabil = () => {
          ></AlertDropEvent>
 
          <Scheduler
-            locale={ptBR}
+            locale={locale}
             view="month"
             month={{
                weekDays: [1, 2, 3, 4, 5, 6, 0],
@@ -115,13 +122,12 @@ export const SchedulerAldabil = () => {
 
             }}
             remoteEvents={getSchedulesToProcessedEvents}
-            fields={[{ name: 'Cliente', type: 'select', config: { required: true, label: 'Cliente' } }]}
+            // fields={[{ name: 'Cliente', type: 'select', config: { required: true, label: 'Cliente' } }]}
             customEditor={(scheduler) => <CustomForm  scheduler={scheduler} />}
             onEventDrop={handleDropEvent}
             onDelete={handleOnDelete}
             viewerExtraComponent={(_fields, event) => {
                return (
-                  <>
                      <Grid container spacing={1}>
                         <Grid item xs={6}>
                            <Typography
@@ -146,7 +152,6 @@ export const SchedulerAldabil = () => {
                            </Typography>
                         </Grid>
                      </Grid>
-                  </>
                );
             }}
          />

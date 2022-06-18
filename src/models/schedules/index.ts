@@ -5,21 +5,9 @@ export type SchedulesType = {
     client: ClientsType,
     service: ServicesSaloonType,
     employee: EmployeesType
-    start: Date,
-    end?: Date
+    start: string,
+    end?: string
 }
 
-export type EventScheduleType = {
-    title: string | number,
-    start: string,
-    end: string,
-    extendedProps: {
-        id?: string | number
-        client: string,
-        service: string,
-        employee: string,
-        description?: string
-    }
-}
 
 export default SchedulesType

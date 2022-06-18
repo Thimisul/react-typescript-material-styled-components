@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import brLocale from '@fullcalendar/core/locales/pt-br'
+import locale from '@fullcalendar/core/locales/pt-br'
 import FullCalendar, { DateSelectArg, EventClickArg, EventInput } from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -8,7 +8,7 @@ import { Box, Button, Typography, Dialog, DialogTitle, DialogContent, DialogCont
 import SchedulesType from '../../models/schedules'
 import './myStyleFullCalendat.css'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { createSchedule, getSchedules } from '../../services/schedules'
+import { createEditSchedule, getSchedules } from '../../services/schedules'
 import { getClients } from '../../services/clients'
 import { ClientsType, EmployeesType } from '../../models'
 import { getEmployeeById, getEmployees } from '../../services/employees'
@@ -72,12 +72,12 @@ const CalendarFull = () => {
     reset()
     selectInfoDate?.view.calendar.unselect()
     if (selectInfoDate && data.client) {
-      createSchedule({
+      createEditSchedule({
         client: data.client,
         employee: data.employee,
         service: data.service,
-        start: selectInfoDate.start,
-        end: selectInfoDate.end
+        start: selectInfoDate.start.toString(),
+        end: selectInfoDate.end.toString()
       })
       selectInfoDate.view.calendar.addEvent({ data })
     } else
@@ -138,7 +138,7 @@ const CalendarFull = () => {
         eventBackgroundColor={theme.palette.background.paper}
         slotMinTime={"08:00:00"}
         slotMaxTime={"23:00:00"}
-        locale={brLocale}
+        locale={locale}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
           left: 'prev,today,next',

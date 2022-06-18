@@ -21,7 +21,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Chip, Divider, IconButton, InputLabel, MenuItem, Theme, useTheme } from '@mui/material';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { EmployeesType, ServicesSaloonType } from '../../models';

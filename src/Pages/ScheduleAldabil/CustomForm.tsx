@@ -3,7 +3,7 @@ import { Box, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, D
 import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { ClientsType, SchedulesType, EmployeesType } from "../../models";
 import { getEmployeeById, getEmployees } from "../../services/employees";
-import { createSchedule, getScheduleById } from "../../services/schedules";
+import { createEditSchedule, getScheduleById } from "../../services/schedules";
 import { getClients } from "../../services/clients"
 import { useEffect, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -16,12 +16,20 @@ interface CustomEditorProps {
 
 export const CustomForm = ({ scheduler }: CustomEditorProps) => {
 
+   const [clients, setClients] = useState<ClientsType[]>()
+   const [employees, setEmployees] = useState<EmployeesType[]>()
+   const [employee, setEmployee] = useState<EmployeesType>()
+   const { handleSubmit, control, reset, setValue } = useForm<SchedulesType>();
+   const event = scheduler.edited;
+
+   event? console.log(event) : console.log()
+
   useEffect(() => {
     getClients().then(clients => setClients(clients))
     getEmployees().then(employees => setEmployees(employees))
 
-    if (scheduler.edited) {
-      getScheduleById(scheduler.edited.event_id).then(schedule => {
+    if (event) {
+      getScheduleById(event.event_id).then(schedule => {
         setValue('id', schedule.id)
         setValue('client', schedule.client)
         setValue('employee', schedule.employee)
@@ -34,24 +42,19 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [clients, setClients] = useState<ClientsType[]>()
-  const [employees, setEmployees] = useState<EmployeesType[]>()
-  const [employee, setEmployee] = useState<EmployeesType>()
-  const { handleSubmit, control, reset, setValue } = useForm<SchedulesType>();
-
-  const event = scheduler.edited;
-
   const onSubmit: SubmitHandler<SchedulesType> = async (data: SchedulesType) => {
-     console.log("event id: @@@@@@@@ " + data.service.id)
+     console.log("Form to createSchedule: ")
+     console.log(data)
 
-    data.id = event?.event_id
-    await getServiceSaloonById(data.service.id!).then( service =>  data.end =  new Date(data.start.getTime() + service.duration * 60 * 1000))
-   
+    await getServiceSaloonById(data.service.id!).then( service =>  data.end =  new Date(new Date(data.start).getTime() + service.duration * 60 * 1000).toString())
+
+    console.log("Form to createSchedule:  with data.end")
+     console.log(data)
 
     try {
       scheduler.loading(true);
 
-      const added_updated_event = await createSchedule(data).then(event => {
+      const added_updated_event = await createEditSchedule(data).then(event => {
       //   return {
       //     event_id: event.id,
       //     title: event.client.name ?? 'Nome do Cliente',
@@ -59,17 +62,17 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
       //     end: parseISO(new Date(event.start + event.service.duration*60*1000).toString() )
       //   } as ProcessedEvent
       return {
-         event_id: event.id,
+         event_id: event.id ?? undefined,
          title: event.client.name ?? 'Nome do Cliente',
-         start: parseISO(event.start.toISOString()),
-         end: parseISO(event.end!.toISOString()),
+         start: new Date(event.start),
+         end: new Date(event.end!),
          client: event.client,
          service: event.service,
          employee: event.employee
        } as ProcessedEvent
       })
 
-      console.log(`aaaaadddddd and updateeeeee`)
+      console.log(`Create Schedule APi to ProcessedEvent`)
       console.log(added_updated_event)
 
       scheduler.onConfirm(added_updated_event, event ? "edit" : "create");
@@ -177,7 +180,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
             <Controller
               control={control}
               name="start"
-              defaultValue={scheduler.state.start.value}
+              defaultValue={event?.start ?? scheduler.state.start.value}
               rules={{ required: true }} //optional
               render={({ field }) =>
               <Grid item xs={12} sx={{my: 2}}>
@@ -198,7 +201,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
           >
-            Cadastrar
+           { event? 'Salvar' : 'Cadastrar'}
           </Button>
         </DialogActions>
       </Box>

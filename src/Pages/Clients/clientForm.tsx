@@ -1,7 +1,5 @@
 import { Paper, Typography, Box, Grid, TextField, Button, IconButton } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import ptBrLocale from "date-fns/locale/pt-BR"
+import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ClientType from "../../models/clients";
