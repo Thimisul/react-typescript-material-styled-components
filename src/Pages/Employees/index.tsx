@@ -45,6 +45,7 @@ const Employees = () => {
       getServiceSaloons().then(services => setListServices(services))
       getEmployees().then(employees =>setListEmployees(employees.reverse()))
   }, [])
+
   //Salva Usuário na Lista e da um reset no form
   const onSubmit: SubmitHandler<EmployeesType> = data => {
     setShowForm(false);
@@ -52,6 +53,15 @@ const Employees = () => {
     createEmployee(data).then(employee => setListEmployees(state => [employee, ...state]))
     reset();
   };
+
+  const handleGetLabel = (value: string): string => {
+     const response = listServices.map(service => {
+      if(service.id === value){
+         return service.name
+      }
+   })
+   return response.toString()
+  }
 
   const handleChange = (event: SelectChangeEvent<typeof servicesSelected>) => {
     console.log(event)
@@ -129,7 +139,7 @@ const Employees = () => {
               <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
 
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            
 
               <Controller
                 control={control}
@@ -146,7 +156,6 @@ const Employees = () => {
                   />
                 }
               />
-            </LocalizationProvider>
 
             <Grid item xs={12} >
               <Controller
@@ -166,7 +175,7 @@ const Employees = () => {
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value) => (
-                            <Chip key={value} label={value} />
+                            <Chip key={value} label={handleGetLabel(value)} />
                           ))}
                         </Box>
                       )}
@@ -175,7 +184,7 @@ const Employees = () => {
                       {listServices.map(service => (
                         <MenuItem
                           key={service.id}
-                          value={service.name}
+                          value={service.id}
                           style={getStyles(service.name, servicesSelected, theme)} >
                           {service.name}
                         </MenuItem>

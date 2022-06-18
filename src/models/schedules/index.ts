@@ -6,7 +6,7 @@ export type SchedulesType = {
     service: ServicesSaloonType,
     employee: EmployeesType
     start: Date,
-    end: Date
+    end?: Date
 }
 
 export type EventScheduleType = {

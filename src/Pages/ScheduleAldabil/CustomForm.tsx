@@ -1,14 +1,14 @@
 import { ProcessedEvent, SchedulerHelpers } from "@aldabil/react-scheduler/dist/types";
-import { Box, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, DialogActions, Button, Grid, TextField } from "@mui/material";
+import { Box, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, DialogActions, Button, Grid, TextField, Dialog } from "@mui/material";
 import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { ClientsType, SchedulesType, EmployeesType } from "../../models";
 import { getEmployeeById, getEmployees } from "../../services/employees";
 import { createSchedule, getScheduleById } from "../../services/schedules";
 import { getClients } from "../../services/clients"
 import { useEffect, useState } from "react";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import { parseISO } from 'date-fns'
+import { getServiceSaloonById } from "../../services/servicesSaloon";
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
@@ -22,6 +22,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
 
     if (scheduler.edited) {
       getScheduleById(scheduler.edited.event_id).then(schedule => {
+        setValue('id', schedule.id)
         setValue('client', schedule.client)
         setValue('employee', schedule.employee)
         getEmployeeById(schedule.employee.id!).then(response => setEmployee(response))
@@ -41,20 +42,35 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
   const event = scheduler.edited;
 
   const onSubmit: SubmitHandler<SchedulesType> = async (data: SchedulesType) => {
+     console.log("event id: @@@@@@@@ " + data.service.id)
 
     data.id = event?.event_id
+    await getServiceSaloonById(data.service.id!).then( service =>  data.end =  new Date(data.start.getTime() + service.duration * 60 * 1000))
+   
 
     try {
       scheduler.loading(true);
 
       const added_updated_event = await createSchedule(data).then(event => {
-        return {
-          event_id: event.id,
-          title: 'Nome do Cliente', // event.client.name,
-          start: parseISO(event.start.toString()),
-          end: parseISO(event.end.toString()),
-        } as ProcessedEvent
+      //   return {
+      //     event_id: event.id,
+      //     title: event.client.name ?? 'Nome do Cliente',
+      //     start: parseISO(event.start),
+      //     end: parseISO(new Date(event.start + event.service.duration*60*1000).toString() )
+      //   } as ProcessedEvent
+      return {
+         event_id: event.id,
+         title: event.client.name ?? 'Nome do Cliente',
+         start: parseISO(event.start.toISOString()),
+         end: parseISO(event.end!.toISOString()),
+         client: event.client,
+         service: event.service,
+         employee: event.employee
+       } as ProcessedEvent
       })
+
+      console.log(`aaaaadddddd and updateeeeee`)
+      console.log(added_updated_event)
 
       scheduler.onConfirm(added_updated_event, event ? "edit" : "create");
       scheduler.close();
@@ -65,13 +81,14 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
   }
 
   return (
-    <Box>
+     
+   <Grid container spacing={2} maxWidth="100%">
+     <Dialog open={true} maxWidth="lg">
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Novo Agendamento <Button onClick={scheduler.close}>Cancel</Button></DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
+            Digite os dados para agendamento: 
           </DialogContentText>
 
           <Controller
@@ -80,6 +97,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
             rules={{ required: true }}
             render={
               ({ field }) =>
+              <Grid item xs={12} sx={{my: 2}}>
                 <Select
                   {...field}
                   margin="dense"
@@ -94,6 +112,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
                       <MenuItem key={client.id} value={client.id}>{client.name}</MenuItem>
                     ))}
                 </Select>
+                </Grid>
             }
           />
 
@@ -103,6 +122,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
             rules={{ required: true }}
             render={
               ({ field }) =>
+              <Grid item xs={12} sx={{my: 2}}>
                 <Select
                   {...field}
                   onChange={e => {
@@ -122,6 +142,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
                       <MenuItem key={employee.id} value={employee.id}>{employee.name}</MenuItem>
                     ))}
                 </Select>
+                </Grid>
             }
           />
 
@@ -132,6 +153,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
               rules={{ required: true }}
               render={
                 ({ field }) =>
+                <Grid item xs={12} sx={{my: 2}} >
                   <Select
                     {...field}
                     onChange={field.onChange}
@@ -147,44 +169,29 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
                         <MenuItem key={client.id} value={client.id}>{client.name}</MenuItem>
                       ))}
                   </Select>
+                  </Grid>
               }
             />}
 
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            
             <Controller
               control={control}
               name="start"
               defaultValue={scheduler.state.start.value}
               rules={{ required: true }} //optional
               render={({ field }) =>
-                <DateTimePicker {...field}
+              <Grid item xs={12} sx={{my: 2}}>
+                <DateTimePicker  {...field}
                   renderInput={(props) =>
-                    <Grid item xs={3} >
                       <TextField value={field.value} {...props} label='Inicio do Serviço'></TextField>
-                    </Grid>}
+                    }
                 />
+                </Grid>
               }
             />
-
-            <Controller
-              control={control}
-              name="end"
-              defaultValue={scheduler.state.end.value}
-              rules={{ required: true }} //optional
-              render={({ field }) =>
-                <DateTimePicker {...field}
-                  renderInput={(props) =>
-                    <Grid item xs={3} >
-                      <TextField value={field.value} {...props} label='Data de Nascimento'></TextField>
-                    </Grid>}
-                />
-              }
-            />
-          </LocalizationProvider>
 
         </DialogContent>
         <DialogActions>
-          <Button onClick={scheduler.close}>Cancel</Button>
           <Button
             type="submit"
             fullWidth
@@ -195,7 +202,9 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
           </Button>
         </DialogActions>
       </Box>
-    </Box>
+   
+    </Dialog>
+    </Grid>
   )
 }
 

@@ -13,9 +13,9 @@ export const getServiceSaloons = async ():Promise<ServicesSaloonType[]> => {
     });
 };
 
-export const getServiceSaloonById = async (id: any) => {
+export const getServiceSaloonById = async (id: any): Promise<ServicesSaloonType> => {
   return axios
-    .get(`${process.env.REACT_APP_API_HOST}/servicesSaloon/${id}`)
+    .get(`${process.env.REACT_APP_API_HOST}/servicesSaloons/${id}`)
     .then((res) => {
       console.log(res.data);
       return res.data;

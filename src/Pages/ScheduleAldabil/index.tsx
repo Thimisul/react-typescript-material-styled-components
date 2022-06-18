@@ -46,28 +46,26 @@ export const SchedulerAldabil = () => {
       return response.map((schedule) => scheduleToPromissedEvent(schedule));
    };
 
-   const handleOnDelete = (deletedId: string | number): Promise<string | number | void> => {
-      return destroySchedule(deletedId).then(response => deletedId);
+   const handleOnDelete = async (deletedId: string | number): Promise<string | number | void> => {
+      const response = await destroySchedule(deletedId)
+      console.log(response)
    }
 
    const handleDropEvent = async (
-      droppedOn: Date,
+      _droppedOn: Date,
       updatedEvent: ProcessedEvent,
       originalEvent: ProcessedEvent
    ): Promise<void | ProcessedEvent> => {
-      setAlertDropedEvent({
-         isOpen: true,
-         event: originalEvent,
-         droppedOn: droppedOn,
-      });
+
       const response = await createSchedule({
          id: originalEvent.event_id,
          start: updatedEvent.start,
          end: updatedEvent.end,
-         client: updatedEvent.client,
-         employee: updatedEvent.employee,
-         service: updatedEvent.service,
+         client: updatedEvent.client.id,
+         employee: updatedEvent.employee.id,
+         service: updatedEvent.service.id,
       }).then((schedule) => scheduleToPromissedEvent(schedule));
+      console.log(`response scheduleToPromissedEvent`)
       return response;
    };
 
@@ -77,8 +75,8 @@ export const SchedulerAldabil = () => {
       return {
          event_id: schedule.id!,
          title: schedule.client.name,
-         start: parseISO(schedule.start.toString()),
-         end: parseISO(schedule.end.toString()),
+         start: schedule.start,
+         end: schedule.end!,
          client: schedule.client.name,
          employee: schedule.employee.name,
          service: schedule.service.name,
@@ -97,9 +95,28 @@ export const SchedulerAldabil = () => {
          <Scheduler
             locale={ptBR}
             view="month"
+            month={{
+               weekDays: [1, 2, 3, 4, 5, 6, 0],
+               weekStartOn: 0,
+               startHour: 7,
+               endHour: 22,
+            }}
+            week={{
+               weekDays: [1, 2, 3, 4, 5, 6, 0],
+               weekStartOn: 0,
+               startHour: 7,
+               endHour: 22,
+               step: 30
+            }}
+            day={{
+               startHour: 7,
+               endHour: 22,
+               step: 30
+
+            }}
             remoteEvents={getSchedulesToProcessedEvents}
-            // fields={[{ name: 'Cliente', type: 'select', config: { required: true, label: 'Cliente' } }]}
-            customEditor={(scheduler) => <CustomForm scheduler={scheduler} />}
+            fields={[{ name: 'Cliente', type: 'select', config: { required: true, label: 'Cliente' } }]}
+            customEditor={(scheduler) => <CustomForm  scheduler={scheduler} />}
             onEventDrop={handleDropEvent}
             onDelete={handleOnDelete}
             viewerExtraComponent={(_fields, event) => {
