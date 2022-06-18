@@ -7,8 +7,7 @@ import { createEditSchedule, getScheduleById } from "../../services/schedules";
 import { getClients } from "../../services/clients"
 import { useEffect, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import { parseISO } from 'date-fns'
-import { getServiceSaloonById } from "../../services/servicesSaloon";
+import { getServicesSaloonById } from "../../services/servicesSaloon";
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
@@ -46,7 +45,7 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
      console.log("Form to createSchedule: ")
      console.log(data)
 
-    await getServiceSaloonById(data.service.id!).then( service =>  data.end =  new Date(new Date(data.start).getTime() + service.duration * 60 * 1000).toString())
+    await getServicesSaloonById(data.service.id!).then( service =>  data.end =  new Date(new Date(data.start).getTime() + service.duration * 60 * 1000).toString())
 
     console.log("Form to createSchedule:  with data.end")
      console.log(data)

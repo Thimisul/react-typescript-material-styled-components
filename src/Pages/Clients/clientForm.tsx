@@ -71,7 +71,7 @@ export const ClientForm = ({client, onCloseForm, type}: ClientFormProps) => {
             <Grid container spacing={2}>
 
                <Grid item xs={2}>
-               <Avatar alt="Remy Sharp" sx={{ml: 2, width: 56, height: 56 }} src="https://source.unsplash.com/800x600/?avatar" />
+               <Avatar variant="rounded" alt="Remy Sharp" sx={{ml: 2, width: 56, height: 56 }} src="https://source.unsplash.com/800x600/?avatar" />
                </Grid>
 
                <Controller

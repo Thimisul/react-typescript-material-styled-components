@@ -23,7 +23,6 @@ import { jsonCashiersFaker } from './testCashier'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Chip, Divider, IconButton } from '@mui/material';
-import { ServicesSaloonInterface } from '../ServicesSaloon';
 
 //Interfaces
 //Cadastro de Serviços Nome, Duração, Valor

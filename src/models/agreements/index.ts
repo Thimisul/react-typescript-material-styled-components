@@ -1,4 +1,4 @@
-import { ServicesSaloonInterface } from "../../Pages/ServicesSaloon";
+import ServicesSaloonType from "../servicesSaloon";
 
 export type AgreementsType = {
     id?: string;
@@ -12,7 +12,7 @@ export type AgreementsType = {
     cep: string,
     number: string,
     complement: string,
-    Service: ServicesSaloonInterface
+    Service: ServicesSaloonType
   }
 
   export default AgreementsType

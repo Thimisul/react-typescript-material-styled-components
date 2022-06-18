@@ -9,7 +9,7 @@ import { useSnackbar } from 'notistack';
 
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import theme from "../../assets/themeGlobal";
-import { getServiceSaloons } from "../../services/servicesSaloon";
+import { getServicesSaloons } from "../../services/servicesSaloon";
 import { SchedulesType, ServicesSaloonType } from "../../models";
 
 export type EmployeeFormType = {
@@ -41,7 +41,7 @@ export const EmployeeForm = ({employee, onCloseForm, type}: EmployeeFormProps) =
    const { enqueueSnackbar } = useSnackbar();
 
    useEffect(() => {
-      getServiceSaloons().then(services => setListServices(services))
+      getServicesSaloons().then(services => setListServices(services))
 
       if(employee){
          setValue('id', employee.id)
@@ -114,7 +114,7 @@ export const EmployeeForm = ({employee, onCloseForm, type}: EmployeeFormProps) =
           <Grid container spacing={2}>
 
           <Grid item xs={2}>
-               <Avatar alt="Remy Sharp" sx={{ml: 2, width: 56, height: 56 }} src="https://source.unsplash.com/800x600/?avatar" />
+               <Avatar variant="rounded" alt="Remy Sharp" sx={{ml: 2, width: 56, height: 56 }} src="https://source.unsplash.com/800x600/?avatar" />
                </Grid>
 
             <Controller

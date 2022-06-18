@@ -3,9 +3,6 @@ import React, { useState, useEffect } from 'react';
 //Imports Material-UI
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -15,101 +12,43 @@ import TableBody from '@mui/material/TableBody';
 import Container from '@mui/material/Container';
 //Material Icons
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
-//Importar json Fake para testes
-import { jsonServicesFaker } from './testServicesSaloon'
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 //Controlar o Form
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Divider, IconButton } from '@mui/material';
-
-//Interfaces
-//Cadastro de Serviços Nome, Duração, Valor
-export interface ServicesSaloonInterface {
-  id: string;
-  name: string,
-  duration: string,
-  price: string
-}
+import { Dialog, Divider, IconButton } from '@mui/material';
+import ServicesSaloonForm, { ServicesSaloonFormType } from './servicesSaloonForm';
+import { ServicesSaloonType } from '../../models';
+import { getServicesSaloons } from '../../services/servicesSaloon';
 
 
 const ServicesSaloon = () => {
-  //react-hook-form
-  const { handleSubmit, formState: { errors }, control, reset } = useForm<ServicesSaloonInterface>();
-  //Mostrar Formulário
-  const [showForm, setShowForm] = useState<Boolean>(false);
+       //Mostrar Formulário
+       const [formType, setTFormType] = useState<ServicesSaloonFormType>()
+       //State da Lista de Usuários Cadastrados
+       const [ serviceEdited, setSErviceEdited] = useState<ServicesSaloonType>()
   //State da Lista de Usuários Cadastrados
-  const [listServices, setServices] = useState<ServicesSaloonInterface[]>([])
+  const [listServices, setServices] = useState<ServicesSaloonType[]>([])
   //Recebe json para carregamento da lista na página
   useEffect(() => {
-    setServices(JSON.parse(jsonServicesFaker()));
+    getServicesSaloons().then(services =>setServices(services.reverse()))
   }, [])
-  //Salva Usuário na Lista e da um reset no form
-  const onSubmit: SubmitHandler<ServicesSaloonInterface> = data => {
-    setShowForm(false);
-    setServices(state => [data, ...state])
-    reset();
-  };
+
+
+  const handleOpenForm = (service?: ServicesSaloonType, formType?: ServicesSaloonFormType) => {
+   setSErviceEdited(service)
+   setTFormType(formType)
+};
+
+const onCloseForm = () => {
+   setSErviceEdited(undefined)
+   getServicesSaloons().then(services =>setServices(services.reverse()))
+   setTFormType(undefined)
+}
 
 
   return (
     <Container>
 
-      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Serviço</Button>
-
-      {showForm && <Paper sx={{ p: 2 }}>
-
-        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Serviço</Typography>
-
-        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-
-          <Grid container spacing={2}>
-
-
-            <Controller
-              name="name"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => <Grid item xs={8}> <TextField fullWidth {...field} label='Nome' /> </Grid>}
-            />
-            {errors.name?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="duration"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => <Grid item xs={2}> <TextField fullWidth {...field} label='Duração' /> </Grid>}
-            />
-            {errors.name?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="price"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => <Grid item xs={2}> <TextField fullWidth {...field} label='Valor' /> </Grid>}
-            />
-            {errors.name?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-          </Grid>
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Cadastrar
-          </Button>
-
-        </Box>
-
-      </Paper>
-      }
+      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setTFormType({type: "new"})}>Adicionar um Novo Serviço</Button>
 
       <Box>
         <Divider />
@@ -128,17 +67,32 @@ const ServicesSaloon = () => {
           <TableBody>
             {listServices?.map((service) => (
               service?.name &&
-              <TableRow key={service.name}>
+              <TableRow key={service.name} hover selected={service.id === serviceEdited?.id}>
                 <TableCell>{service.name}</TableCell>
                 <TableCell>{service.duration} Minutos</TableCell>
                 <TableCell>{service.price}</TableCell>
-                <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
+                <TableCell>
+                           <IconButton
+                           onClick={() => handleOpenForm(service, {type: "show"})}
+                           >
+                              <EditOutlinedIcon />
+                           </IconButton>
+                           <IconButton
+                              onClick={() => handleOpenForm(service, { type: "delete"})}
+                           >
+                              <DeleteOutlinedIcon color="error" />
+                           </IconButton>
+                        </TableCell>
               </TableRow>
             ))}
           </TableBody>
 
         </Table>
       </Box>
+
+      <Dialog open={formType? true : false} onClose={onCloseForm}>
+            {formType && <ServicesSaloonForm ServicesSaloon={serviceEdited} onCloseForm={onCloseForm} type={formType.type}></ServicesSaloonForm>}
+         </Dialog>
 
     </Container >
   );

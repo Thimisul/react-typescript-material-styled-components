@@ -21,7 +21,8 @@ import { jsonAgreementsFaker } from './testeAgreements'
 //Controlar o Form
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Divider, IconButton } from '@mui/material';
-import { ServicesSaloonInterface } from '../ServicesSaloon';
+
+import ServicesSaloonType from '../../models/servicesSaloon';
 
 //Interfaces
 // Cadastro de Convênios
@@ -43,7 +44,7 @@ export interface AgreementInterface {
   cep: string,
   number: string,
   complement: string,
-  Service: ServicesSaloonInterface
+  Service: ServicesSaloonType
 }
 
 
