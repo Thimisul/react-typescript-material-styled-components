@@ -1,4 +1,4 @@
-import { Paper, Typography, Box, Grid, TextField, Button, IconButton, Avatar } from "@mui/material";
+import { Paper, Typography, Box, Grid, TextField, Button, IconButton } from "@mui/material";
 import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import  {ServicesSaloonType} from "../../models/";
@@ -31,6 +31,7 @@ export const ServicesSaloonForm = ({ServicesSaloon, onCloseForm, type}: Services
          setValue('duration', ServicesSaloon.duration)
          setValue('price', ServicesSaloon.price)
       }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
    
 

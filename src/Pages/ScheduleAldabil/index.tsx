@@ -3,41 +3,13 @@ import { Scheduler } from "@aldabil/react-scheduler";
 import Container from "@mui/material/Container";
 import { getSchedules, destroySchedule, createEditSchedule } from "../../services/schedules";
 import { ProcessedEvent } from "@aldabil/react-scheduler/dist/types";
-import parseISO from "date-fns/parseISO";
 import locale from "date-fns/locale/pt-BR";
 import CustomForm from "./CustomForm";
-import { Alert, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import theme from "../../assets/themeGlobal";
 import { SchedulesType } from "../../models";
 
-type AlertDropEventType = {
-   isOpen: boolean;
-   event?: ProcessedEvent;
-   droppedOn?: Date;
-};
-
-const AlertDropEvent = ({ isOpen, event, droppedOn }: AlertDropEventType) =>
-   isOpen ? (
-      <Alert
-         severity="warning"
-         action={
-            <Button color="inherit" size="small">
-               UNDO
-            </Button>
-         }
-      >
-         <>
-            Client: {event?.title} sendo movido para a data: {droppedOn?.toDateString()}
-         </>
-      </Alert>
-   ) : (
-      <></>
-   );
-
 export const SchedulerAldabil = () => {
-   const [alertDropedEvent, setAlertDropedEvent] = useState<AlertDropEventType>(
-      { isOpen: false, event: undefined, droppedOn: undefined }
-   );
 
    const getSchedulesToProcessedEvents = async (): Promise<
       ProcessedEvent[]
@@ -92,12 +64,10 @@ export const SchedulerAldabil = () => {
 
    return (
       <Container>
-
-         <AlertDropEvent
-            isOpen={alertDropedEvent.isOpen}
-            droppedOn={alertDropedEvent.droppedOn}
-            event={alertDropedEvent.event}
-         ></AlertDropEvent>
+       
+        <Typography mt={3} variant={'h4'}>Agendamentos</Typography>
+        <Divider />
+        <Box mt={3}></Box>
 
          <Scheduler
             locale={locale}

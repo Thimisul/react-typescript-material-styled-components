@@ -67,6 +67,7 @@ const Clients = () => {
                      <TableCell>CPF</TableCell>
                      <TableCell>Name</TableCell>
                      <TableCell>Data de Nascimento</TableCell>
+                     <TableCell>Convênio</TableCell>
                      <TableCell>Ações</TableCell>
                   </TableRow>
                </TableHead>
@@ -76,9 +77,8 @@ const Clients = () => {
                      <TableRow key={client.id} hover selected={client.id === clientEdit?.id}>
                         <TableCell>{client.cpf} </TableCell>
                         <TableCell>{client.name}</TableCell>
-                        <TableCell>
-                           {new Date(client.birthday).toLocaleDateString()}
-                        </TableCell>
+                        <TableCell>{new Date(client.birthday).toLocaleDateString()}</TableCell>
+                        <TableCell>{client.agreement?.fantasyName ?? ''}</TableCell>
                         <TableCell>
                            <IconButton
                            onClick={() => handleOpenForm(client, {type: "show"})}

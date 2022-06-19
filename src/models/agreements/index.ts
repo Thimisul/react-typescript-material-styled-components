@@ -12,7 +12,7 @@ export type AgreementsType = {
     cep: string,
     number: string,
     complement: string,
-    Service: ServicesSaloonType
+    services: ServicesSaloonType[]
   }
 
   export default AgreementsType

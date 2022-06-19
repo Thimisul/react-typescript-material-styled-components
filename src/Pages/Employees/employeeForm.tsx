@@ -10,7 +10,7 @@ import { useSnackbar } from 'notistack';
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import theme from "../../assets/themeGlobal";
 import { getServicesSaloons } from "../../services/servicesSaloon";
-import { SchedulesType, ServicesSaloonType } from "../../models";
+import { ServicesSaloonType } from "../../models";
 
 export type EmployeeFormType = {
    type: 'show'| 'new' | 'delete' 
@@ -51,6 +51,7 @@ export const EmployeeForm = ({employee, onCloseForm, type}: EmployeeFormProps) =
          employee.services.map(service => setServicesSelected(state =>[service.id!, ...state] ))
          setValue('services', employee.services)
       }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
 
    //react-hook-form
@@ -88,7 +89,7 @@ export const EmployeeForm = ({employee, onCloseForm, type}: EmployeeFormProps) =
    const handleGetLabel = (value: string): string => {
       const response = listServices.map(service => {
        if(service.id === value){
-          return service.name
+          return  service.name
        }
     })
     return response.toString()

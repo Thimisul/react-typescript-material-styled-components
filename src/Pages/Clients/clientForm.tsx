@@ -1,6 +1,6 @@
-import { Paper, Typography, Box, Grid, TextField, Button, IconButton, Avatar } from "@mui/material";
+import { Paper, Typography, Box, Grid, TextField, Button, IconButton, Avatar, MenuItem, Select } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ClientType from "../../models/clients";
 import { createClient, destroyClient, editClient } from "../../services/clients";
@@ -8,6 +8,9 @@ import { useSnackbar } from 'notistack';
 
 
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import { ServicesSaloonType } from "../../models";
+import agreements, { AgreementsType } from "../../models/agreements";
+import { getAgreements } from "../../services/agreements";
 
 export type ClientFormType = {
    type: 'show'| 'new' | 'delete' 
@@ -21,9 +24,12 @@ interface ClientFormProps extends ClientFormType {
 
 export const ClientForm = ({client, onCloseForm, type}: ClientFormProps) => {
 
+   const [agreements, setAgreements] = useState<AgreementsType[]>([])
+
    const { enqueueSnackbar } = useSnackbar();
 
    useEffect(() => {
+      getAgreements().then(agreements =>setAgreements(agreements.reverse()))
       if(client){
          setValue('id', client.id)
          setValue('cpf', client.cpf)
@@ -35,7 +41,9 @@ export const ClientForm = ({client, onCloseForm, type}: ClientFormProps) => {
          setValue('district', client.district)
          setValue('city', client.city)
          setValue('complement', client.complement)
+         client.agreement ? setValue('agreement', client.agreement) : console.log()
       }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
 
    //react-hook-form
@@ -219,18 +227,36 @@ export const ClientForm = ({client, onCloseForm, type}: ClientFormProps) => {
                   name="complement"
                   defaultValue=""
                   control={control}
-                  rules={{ required: false }}
                   render={({ field }) => (
-                     <Grid item xs={12}>
+                     <Grid item xs={6}>
                         <TextField fullWidth {...field} label="Complemento" />
                      </Grid>
                   )}
                />
-               {errors.name?.type === "required" && (
-                  <Typography variant="inherit" color={"tomato"}>
-                     * Nome deve ser preenchido
-                  </Typography>
-               )}
+
+<Controller
+            name="agreement.id"
+            control={control}
+            render={
+              ({ field }) =>
+              <Grid item xs={6}>
+                <Select
+                  {...field}
+                  margin="dense"
+                  id="client"
+                  label="Cliente"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  value={field.value ?? ''}
+                >{
+                    agreements?.map(agreement => (
+                      <MenuItem key={agreement.id} value={agreement.id}>{agreement.fantasyName}</MenuItem>
+                    ))}
+                </Select>
+                </Grid>
+            }
+          />
                  
             </Grid>
             {type === "delete"? 
