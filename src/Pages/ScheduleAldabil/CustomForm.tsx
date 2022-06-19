@@ -1,5 +1,5 @@
 import { ProcessedEvent, SchedulerHelpers } from "@aldabil/react-scheduler/dist/types";
-import { Box, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, DialogActions, Button, Grid, TextField, Dialog } from "@mui/material";
+import { Box, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, DialogActions, Button, Grid, TextField, Dialog, IconButton } from "@mui/material";
 import { SubmitHandler, Controller, useForm } from "react-hook-form";
 import { ClientsType, SchedulesType, EmployeesType } from "../../models";
 import { getEmployeeById, getEmployees } from "../../services/employees";
@@ -8,6 +8,8 @@ import { getClients } from "../../services/clients"
 import { useEffect, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { getServicesSaloonById } from "../../services/servicesSaloon";
+
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
@@ -87,11 +89,28 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
    <Grid container spacing={2} maxWidth="100%">
      <Dialog open={true} maxWidth="lg">
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Novo Agendamento <Button onClick={scheduler.close}>Cancel</Button></DialogTitle>
+        <DialogTitle>Novo Agendamento <IconButton onClick={() => scheduler.close()}><ClearOutlinedIcon></ClearOutlinedIcon></IconButton></DialogTitle>
         <DialogContent>
           <DialogContentText>
             Digite os dados para agendamento: 
           </DialogContentText>
+
+          <Controller
+              control={control}
+              name="start"
+              defaultValue={event?.start ?? scheduler.state.start.value}
+              rules={{ required: true }} //optional
+              render={({ field }) =>
+              <Grid item xs={12} sx={{my: 2}}>
+                <DateTimePicker  {...field}
+                  renderInput={(props) =>
+                      <TextField value={field.value} {...props} label='Inicio do Serviço'></TextField>
+                    }
+                />
+                </Grid>
+              }
+            />
+
 
           <Controller
             name="client.id"
@@ -174,23 +193,6 @@ export const CustomForm = ({ scheduler }: CustomEditorProps) => {
                   </Grid>
               }
             />}
-
-            
-            <Controller
-              control={control}
-              name="start"
-              defaultValue={event?.start ?? scheduler.state.start.value}
-              rules={{ required: true }} //optional
-              render={({ field }) =>
-              <Grid item xs={12} sx={{my: 2}}>
-                <DateTimePicker  {...field}
-                  renderInput={(props) =>
-                      <TextField value={field.value} {...props} label='Inicio do Serviço'></TextField>
-                    }
-                />
-                </Grid>
-              }
-            />
 
         </DialogContent>
         <DialogActions>

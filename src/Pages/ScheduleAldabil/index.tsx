@@ -68,8 +68,9 @@ export const SchedulerAldabil = () => {
         <Typography mt={3} variant={'h4'}>Agendamentos</Typography>
         <Divider />
         <Box mt={3}></Box>
-
+      <Box >
          <Scheduler
+         height={450}
             locale={locale}
             view="month"
             month={{
@@ -125,6 +126,7 @@ export const SchedulerAldabil = () => {
                );
             }}
          />
+         </Box>
       </Container>
    );
 };
