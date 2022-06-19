@@ -1,4 +1,4 @@
-import { Paper, Typography, Box, Grid, TextField, Button, IconButton, Avatar, Chip, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Theme } from "@mui/material";
+import { Paper, Typography, Box, Grid, TextField, Button, IconButton, Chip, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Theme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {AgreementsType, ServicesSaloonType} from "../../models";
@@ -152,7 +152,7 @@ export const AgreementForm = ({agreement, onCloseForm, type}: AgreementFormProps
 
 <Controller
               name="discount"
-              defaultValue=''
+              defaultValue={0}
               control={control}
               rules={{ required: true }}
               render={({ field }) =>

@@ -5,7 +5,7 @@ import { getSchedules, destroySchedule, createEditSchedule } from "../../service
 import { ProcessedEvent } from "@aldabil/react-scheduler/dist/types";
 import locale from "date-fns/locale/pt-BR";
 import CustomForm from "./CustomForm";
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import theme from "../../assets/themeGlobal";
 import { SchedulesType } from "../../models";
 
@@ -95,7 +95,7 @@ export const SchedulerAldabil = () => {
             remoteEvents={getSchedulesToProcessedEvents}
             // fields={[{ name: 'Cliente', type: 'select', config: { required: true, label: 'Cliente' } }]}
             customEditor={(scheduler) => <CustomForm  scheduler={scheduler} />}
-            onEventDrop={handleDropEvent}
+            //onEventDrop={handleDropEvent}
             onDelete={handleOnDelete}
             viewerExtraComponent={(_fields, event) => {
                return (

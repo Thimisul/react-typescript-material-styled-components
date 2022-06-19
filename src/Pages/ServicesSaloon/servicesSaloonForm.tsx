@@ -98,7 +98,7 @@ export const ServicesSaloonForm = ({ServicesSaloon, onCloseForm, type}: Services
 
             <Controller
               name="price"
-              defaultValue=''
+              defaultValue={0}
               control={control}
               rules={{ required: true }}
               render={({ field }) => <Grid item xs={3}>
