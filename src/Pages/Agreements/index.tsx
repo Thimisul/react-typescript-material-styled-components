@@ -3,9 +3,6 @@ import React, { useState, useEffect } from 'react';
 //Imports Material-UI
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -15,55 +12,39 @@ import TableBody from '@mui/material/TableBody';
 import Container from '@mui/material/Container';
 //Material Icons
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 //Importar json Fake para testes
-import { jsonAgreementsFaker } from './testeAgreements'
 //Controlar o Form
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Divider, IconButton } from '@mui/material';
-import { ServicesSaloonInterface } from '../ServicesSaloon';
+import { Chip, Dialog, Divider, IconButton } from '@mui/material';
 
-//Interfaces
-// Cadastro de Convênios
-// Nome Fantasia, Razão Social, CNPJ, Valor de Desconto, Cidade, Estado, Rua, Cep, Número e Complemento 
-
-// Tabela Servicos
-// Serviço
-
-
-export interface AgreementInterface {
-  id: string;
-  fantasyName: string,
-  corporateName: string
-  cnpj: string
-  discount: string,
-  city: string,
-  state: string,
-  street: string,
-  cep: string,
-  number: string,
-  complement: string,
-  Service: ServicesSaloonInterface
-}
+import { getAgreements } from '../../services/agreements';
+import { AgreementsType } from '../../models';
+import AgreementForm, { AgreementFormType } from './agreementsForm';
 
 
 const Agreement = () => {
-  //react-hook-form
-  const { handleSubmit, formState: { errors }, control, reset } = useForm<AgreementInterface>();
-  //Mostrar Formulário
-  const [showForm, setShowForm] = useState<Boolean>(false);
+   //Mostrar Formulário
+   const [formType, setTFormType] = useState<AgreementFormType>()
+   //State da Lista de Usuários Cadastrados
+   const [ agreementEdited, setAgreementEdited] = useState<AgreementsType>()
   //State da Lista de Usuários Cadastrados
-  const [listAgreements, setAgreements] = useState<AgreementInterface[]>([])
+  const [listAgreements, setAgreements] = useState<AgreementsType[]>([])
   //Recebe json para carregamento da lista na página
   useEffect(() => {
-    setAgreements(JSON.parse(jsonAgreementsFaker()));
-  }, [])
-  //Salva Usuário na Lista e da um reset no form
-  const onSubmit: SubmitHandler<AgreementInterface> = data => {
-    setShowForm(false);
-    setAgreements(state => [data, ...state])
-    reset();
-  };
+   getAgreements().then(agreements =>setAgreements(agreements.reverse()))
+ }, [])
+
+ const handleOpenForm = (agreement?: AgreementsType, formType?: AgreementFormType) => {
+   setAgreementEdited(agreement)
+   setTFormType(formType)
+};
+
+const onCloseForm = () => {
+   setAgreementEdited(undefined)
+   getAgreements().then(agreements =>setAgreements(agreements.reverse()))
+   setTFormType(undefined)
+}
+
 
   //const listUF = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ",
   //  "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
@@ -72,172 +53,7 @@ const Agreement = () => {
   return (
     <Container>
 
-      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setShowForm(true)}>Adicionar um Novo Convênio</Button>
-
-      {showForm && <Paper sx={{ p: 2 }}>
-
-        <Typography variant='h4' color='primary' gutterBottom>Cadastro de Convênios</Typography>
-
-        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-
-          <Grid container spacing={2}>
-
-            <Controller
-              name="cnpj"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={3}>
-                  <TextField fullWidth {...field} label='CNPJ' />
-                </Grid>
-              }
-            />
-            {errors.cnpj?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="corporateName"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={5}>
-                  <TextField fullWidth {...field} label='Razão Social' />
-                </Grid>
-              }
-            />
-            {errors.corporateName?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="fantasyName"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={4}>
-                  <TextField fullWidth {...field} label='Nome Fantasia' />
-                </Grid>
-              }
-            />
-            {errors.fantasyName?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="cep"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={2}>
-                  <TextField fullWidth {...field} label='CEP' />
-                </Grid>
-              }
-            />
-            {errors.cep?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="street"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={9}>
-                  <TextField fullWidth {...field} label='Rua' />
-                </Grid>
-              }
-            />
-            {errors.street?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="number"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={1}>
-                  <TextField fullWidth {...field} label='N' />
-                </Grid>
-              }
-            />
-            {errors.number?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="state"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={1}>
-                  <TextField fullWidth {...field} label='UF' />
-                </Grid>
-              }
-            />
-            {errors.state?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="city"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={4}>
-                  <TextField fullWidth {...field} label='Cidade' />
-                </Grid>
-              }
-            />
-            {errors.city?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="complement"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={5}>
-                  <TextField fullWidth {...field} label='Complemento' />
-                </Grid>
-              }
-            />
-            {errors.complement?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-            <Controller
-              name="discount"
-              defaultValue=''
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) =>
-                <Grid item xs={2}>
-                  <TextField fullWidth {...field} label='Desconto' />
-                </Grid>
-              }
-            />
-            {errors.discount?.type === 'required' &&
-              <Typography variant='inherit' color={'tomato'} >* Nome deve ser preenchido</Typography>}
-
-
-          </Grid>
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Cadastrar
-          </Button>
-
-        </Box>
-
-      </Paper>
-      }
+      <Button sx={{ mt: 2 }} variant='contained' onClick={() => setTFormType({type: "show"})}>Adicionar um Novo Convênio</Button>
 
       <Box>
         <Divider />
@@ -256,11 +72,32 @@ const Agreement = () => {
           <TableBody>
             {listAgreements?.map((agreement) => (
               agreement?.cnpj &&
-              <TableRow key={agreement.cnpj}>
+              <TableRow key={agreement.cnpj} hover selected={agreement.id === agreementEdited?.id}>
                 <TableCell>{agreement.cnpj}</TableCell>
                 <TableCell>{agreement.fantasyName}</TableCell>
                 <TableCell>{agreement.discount}%</TableCell>
-                <TableCell><IconButton><EditOutlinedIcon /></IconButton><IconButton><ClearOutlinedIcon /></IconButton></TableCell>
+                <TableCell>
+                    {agreement.services?.map(service =>
+                    (
+                      <Chip
+                        sx={{ m: 1 }}
+                        key={service.id!}
+                        label={service.name} />
+                     
+                    ))}
+                  </TableCell>
+                <TableCell>
+                           <IconButton
+                           onClick={() => handleOpenForm(agreement, {type: "show"})}
+                           >
+                              <EditOutlinedIcon />
+                           </IconButton>
+                           <IconButton
+                              onClick={() => handleOpenForm(agreement, { type: "delete"})}
+                           >
+                              <DeleteOutlinedIcon color="error" />
+                           </IconButton>
+                        </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -268,6 +105,10 @@ const Agreement = () => {
         </Table>
       </Box>
 
+      <Dialog maxWidth='md' open={formType? true : false} onClose={onCloseForm}>
+            {formType && <AgreementForm agreement={agreementEdited} onCloseForm={onCloseForm} type={formType.type}></AgreementForm>}
+         </Dialog>
+         
     </Container >
   );
 }

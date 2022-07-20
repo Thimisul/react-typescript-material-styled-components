@@ -1,53 +1,30 @@
 import React, { useState } from "react";
 import { Scheduler } from "@aldabil/react-scheduler";
 import Container from "@mui/material/Container";
-import { createSchedule, getSchedules, destroySchedule } from "../../services/schedules";
+import { getSchedules, destroySchedule, createEditSchedule } from "../../services/schedules";
 import { ProcessedEvent } from "@aldabil/react-scheduler/dist/types";
-import parseISO from "date-fns/parseISO";
-import ptBR from "date-fns/locale/pt-BR";
+import locale from "date-fns/locale/pt-BR";
 import CustomForm from "./CustomForm";
-import { Alert, Button, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import theme from "../../assets/themeGlobal";
 import { SchedulesType } from "../../models";
 
-type AlertDropEventType = {
-   isOpen: boolean;
-   event?: ProcessedEvent;
-   droppedOn?: Date;
-};
-
-const AlertDropEvent = ({ isOpen, event, droppedOn }: AlertDropEventType) =>
-   isOpen ? (
-      <Alert
-         severity="warning"
-         action={
-            <Button color="inherit" size="small">
-               UNDO
-            </Button>
-         }
-      >
-         <>
-            Client: {event?.title} sendo movido para a data: {droppedOn?.toDateString()}
-         </>
-      </Alert>
-   ) : (
-      <></>
-   );
-
 export const SchedulerAldabil = () => {
-   const [alertDropedEvent, setAlertDropedEvent] = useState<AlertDropEventType>(
-      { isOpen: false, event: undefined, droppedOn: undefined }
-   );
 
    const getSchedulesToProcessedEvents = async (): Promise<
       ProcessedEvent[]
    > => {
       const response = await getSchedules();
-      return response.map((schedule) => scheduleToPromissedEvent(schedule));
+      console.log("To PromisseEvent");
+      console.log(response);  
+      return response.map(schedule =>{
+         return scheduleToPromissedEvent(schedule);
+      })
    };
 
-   const handleOnDelete = (deletedId: string | number): Promise<string | number | void> => {
-      return destroySchedule(deletedId).then(response => deletedId);
+   const handleOnDelete = async (deletedId: string | number): Promise<string | number | void> => {
+      const response = await destroySchedule(deletedId)
+      console.log(response)
    }
 
    const handleDropEvent = async (
@@ -55,56 +32,73 @@ export const SchedulerAldabil = () => {
       updatedEvent: ProcessedEvent,
       originalEvent: ProcessedEvent
    ): Promise<void | ProcessedEvent> => {
-      setAlertDropedEvent({
-         isOpen: true,
-         event: originalEvent,
-         droppedOn: droppedOn,
-      });
-      const response = await createSchedule({
+      console.log("Original Event")
+      console.log(originalEvent)
+      console.log("Update Event")
+      console.log(updatedEvent)
+      console.log("Droped On")
+      console.log(droppedOn)
+      const response = await createEditSchedule({
          id: originalEvent.event_id,
-         start: updatedEvent.start,
-         end: updatedEvent.end,
-         client: updatedEvent.client,
-         employee: updatedEvent.employee,
-         service: updatedEvent.service,
+         start: updatedEvent.start.toString(),
+         end: updatedEvent.end.toString(),
+         client: updatedEvent.client.id,
+         employee: updatedEvent.employee.id,
+         service: updatedEvent.service.id,
       }).then((schedule) => scheduleToPromissedEvent(schedule));
+      console.log(`response scheduleToPromissedEvent`)
       return response;
    };
 
    const scheduleToPromissedEvent = (schedule: SchedulesType) => {
-      console.log("ScheduleToPromissedEvent");
-      console.log(schedule);
       return {
          event_id: schedule.id!,
-         title: schedule.client.name,
-         start: parseISO(schedule.start.toString()),
-         end: parseISO(schedule.end.toString()),
-         client: schedule.client.name,
-         employee: schedule.employee.name,
-         service: schedule.service.name,
+         title: schedule.client.name ?? "Sem nome de Cliente",
+         start: new Date(schedule.start),
+         end: new Date(schedule.end!),
+         client: schedule.client.name ?? "Sem nome de Cliente",
+         employee: schedule.employee.name ?? "Sem nome de Funcionário",
+         service: schedule.service.name ?? "Sem nome de Serviço",
       } as ProcessedEvent;
    };
 
    return (
       <Container>
-
-         <AlertDropEvent
-            isOpen={alertDropedEvent.isOpen}
-            droppedOn={alertDropedEvent.droppedOn}
-            event={alertDropedEvent.event}
-         ></AlertDropEvent>
-
+       
+        <Typography mt={3} variant={'h4'}>Agendamentos</Typography>
+        <Divider />
+        <Box mt={3}></Box>
+      <Box >
          <Scheduler
-            locale={ptBR}
+         height={450}
+            locale={locale}
             view="month"
+            month={{
+               weekDays: [1, 2, 3, 4, 5, 6, 0],
+               weekStartOn: 0,
+               startHour: 7,
+               endHour: 22,
+            }}
+            week={{
+               weekDays: [1, 2, 3, 4, 5, 6, 0],
+               weekStartOn: 0,
+               startHour: 7,
+               endHour: 22,
+               step: 30
+            }}
+            day={{
+               startHour: 7,
+               endHour: 22,
+               step: 30
+
+            }}
             remoteEvents={getSchedulesToProcessedEvents}
             // fields={[{ name: 'Cliente', type: 'select', config: { required: true, label: 'Cliente' } }]}
-            customEditor={(scheduler) => <CustomForm scheduler={scheduler} />}
-            onEventDrop={handleDropEvent}
+            customEditor={(scheduler) => <CustomForm  scheduler={scheduler} />}
+            //onEventDrop={handleDropEvent}
             onDelete={handleOnDelete}
             viewerExtraComponent={(_fields, event) => {
                return (
-                  <>
                      <Grid container spacing={1}>
                         <Grid item xs={6}>
                            <Typography
@@ -129,10 +123,10 @@ export const SchedulerAldabil = () => {
                            </Typography>
                         </Grid>
                      </Grid>
-                  </>
                );
             }}
          />
+         </Box>
       </Container>
    );
 };

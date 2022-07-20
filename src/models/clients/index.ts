@@ -1,14 +1,17 @@
+import AgreementsType from "../agreements"
+
 export type ClientType = {
-    id?: string,
+    id?: string | number,
     cpf: string
     name: string
-    birthday: Date
+    birthday: string
     cep: string
     street: string;
     number: string;
     district: string;
     city: string;
-    complement: string
+    complement?: string
+    agreement? : AgreementsType
   }
 
   export default ClientType

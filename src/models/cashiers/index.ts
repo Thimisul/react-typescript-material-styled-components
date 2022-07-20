@@ -1,12 +1,11 @@
-import { ServicesSaloonType } from "../servicesSaloon";
-import ClientType from "../clients";
+import SchedulesType from "../schedules";
 
-export type CashiersSaloonType = {
+export type CashiersType = {
     id?: string;
-    client: ClientType,
-    services: ServicesSaloonType | ServicesSaloonType[],
+    schedule: SchedulesType
     price: string,
-    date: Date,
+    date?: string,
     status: 'AGENDADO' | 'ABERTO' | 'PAGO'
   }
   
+  export default CashiersType

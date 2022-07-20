@@ -1,18 +1,18 @@
-import { ServicesSaloonInterface } from "../../Pages/ServicesSaloon";
+import ServicesSaloonType from "../servicesSaloon";
 
 export type AgreementsType = {
     id?: string;
     fantasyName: string,
     corporateName: string
     cnpj: string
-    discount: string,
+    discount: number,
     city: string,
     state: string,
     street: string,
     cep: string,
     number: string,
     complement: string,
-    Service: ServicesSaloonInterface
+    services: ServicesSaloonType[]
   }
 
   export default AgreementsType

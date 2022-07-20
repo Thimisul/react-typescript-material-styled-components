@@ -2,12 +2,15 @@ import React from 'react';
 // Imports Material-UI
 import Box from '@mui/material/Box';
 // Imports
-import { Agreements, Cashier, Clients, Employees, ServicesSaloon, Schedule, ScheduleAldabil } from './Pages';
+import { Agreements, Cashier, Clients, Employees, ServicesSaloon, ScheduleAldabil,Login } from './Pages';
 import { Sidebar } from './Components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Chart from './Pages/Charts';
 
 export default function App() {
+
+   const logged: boolean = true
+if(logged){
   return (
     <Box
       sx={{
@@ -39,8 +42,6 @@ export default function App() {
             </Route>
             <Route path="/cashier" element={<Cashier />}>
             </Route>
-            <Route path="/schedulefull" element={<Schedule />}>
-            </Route>
             <Route path="/schedule" element={<ScheduleAldabil />}>
             </Route>
             <Route path="/reports" element={<Chart />}>
@@ -52,5 +53,10 @@ export default function App() {
         <Box sx={{ gridArea: 'footer', bgcolor: '#041317' }}>Footer</Box>
       </BrowserRouter >
     </Box >
-  );
+  )} else{
+   return(
+
+      <Login></Login>
+   )
+  }
 }

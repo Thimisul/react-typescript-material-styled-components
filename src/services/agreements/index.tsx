@@ -1,9 +1,9 @@
 import axios from "axios";
-import { EmployeesType } from "../../models";
+import { AgreementsType } from "../../models/agreements";
 
-export const getEmployees = async (): Promise<EmployeesType[]> => {
+export const getAgreements = async (): Promise<AgreementsType[]> => {
    return axios
-      .get(`${process.env.REACT_APP_API_HOST}/Employees`)
+      .get(`${process.env.REACT_APP_API_HOST}/Agreements`)
       .then((res) => {
          console.log(res.data);
          return res.data;
@@ -13,9 +13,9 @@ export const getEmployees = async (): Promise<EmployeesType[]> => {
       });
 };
 
-export const getEmployeeById = async (id: any): Promise<EmployeesType> => {
+export const getAgreementById = async (id: any): Promise<AgreementsType> => {
    return axios
-      .get(`${process.env.REACT_APP_API_HOST}/Employees/${id}`)
+      .get(`${process.env.REACT_APP_API_HOST}/Agreements/${id}`)
       .then((res) => {
          console.log(res.data);
          return res.data;
@@ -24,9 +24,9 @@ export const getEmployeeById = async (id: any): Promise<EmployeesType> => {
          return console.log("algo deu errado\n" + e);
       });
 };
-export const destroyEmployee = async (id: any): Promise<EmployeesType> => {
+export const destroyAgreement = async (id: any): Promise<AgreementsType> => {
    return axios
-      .delete(`${process.env.REACT_APP_API_HOST}/Employees/${id}`)
+      .delete(`${process.env.REACT_APP_API_HOST}/Agreements/${id}`)
       .then((res) => {
          console.log(res.data);
          return res.data;
@@ -36,9 +36,9 @@ export const destroyEmployee = async (id: any): Promise<EmployeesType> => {
       });
 };
 
-export const createEmployee = (Employee: EmployeesType): Promise<EmployeesType> => {
+export const createAgreement = (Agreement: AgreementsType): Promise<AgreementsType> => {
    return axios
-      .post(`${process.env.REACT_APP_API_HOST}/Employees/`, Employee)
+      .post(`${process.env.REACT_APP_API_HOST}/Agreements/`, Agreement)
       .then((res) => {
          console.log(res.data);
          return res.data;
@@ -48,9 +48,9 @@ export const createEmployee = (Employee: EmployeesType): Promise<EmployeesType> 
       });
 };
 
-export const editEmployee = (Employee: EmployeesType): Promise<EmployeesType> => {
+export const editAgreement = (Agreement: AgreementsType): Promise<AgreementsType> => {
    return axios
-      .patch(`${process.env.REACT_APP_API_HOST}/Employees/${Employee.id}`, Employee)
+      .patch(`${process.env.REACT_APP_API_HOST}/Agreements/${Agreement.id}`, Agreement)
       .then((res) => {
          console.log(res.data);
          return res.data;

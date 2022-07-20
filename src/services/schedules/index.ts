@@ -5,7 +5,7 @@ export const getSchedules = async (): Promise<SchedulesType[]> => {
    return axios
       .get(`${process.env.REACT_APP_API_HOST}/schedules`)
       .then((res) => {
-         console.log("Retonando: ");
+         console.log("Retonando Schedules: ");
          console.log(res.data);
          return res.data;
       })
@@ -14,9 +14,7 @@ export const getSchedules = async (): Promise<SchedulesType[]> => {
       });
 };
 
-export const getScheduleById = async (
-   id: string | number
-): Promise<SchedulesType> => {
+export const getScheduleById = async (id: string | number): Promise<SchedulesType> => {
    return axios
       .get(`${process.env.REACT_APP_API_HOST}/schedules/${id}`)
       .then((res) => {
@@ -28,9 +26,7 @@ export const getScheduleById = async (
       });
 };
 
-export const createSchedule = (
-   schedule: SchedulesType
-): Promise<SchedulesType> => {
+export const createEditSchedule = (schedule: SchedulesType): Promise<SchedulesType> => {
    if (schedule.id) {
       return axios
          .patch(

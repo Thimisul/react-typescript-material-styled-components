@@ -1,1 +1,5 @@
-{}
+{
+  "editor.wordWrapColumn": 120,
+  "editor.wordWrap": "off",
+  "prettier.endOfLine": "crlf"
+}
